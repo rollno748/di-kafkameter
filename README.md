@@ -127,6 +127,6 @@ Under Development
  * Producer Config property : https://kafka.apache.org/documentation/#producerconfigs
 
  
- 
- 
+Please rate a :star2: if you like it.
+Please open up :bug: - If you experienced something.
  
