@@ -126,7 +126,11 @@ Under Development
  * Validation : Kafka tool (http://www.kafkatool.com/)
  * Producer Config property : https://kafka.apache.org/documentation/#producerconfigs
 
- 
+
+## 💲 Donate
+<a href="https://www.buymeacoffee.com/rollno748" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 30px !important;width: 109px !important;" ></a> 
+
 Please rate a :star2: if you like it.
+
 Please open up :bug: - If you experienced something.
  
