@@ -128,7 +128,7 @@ Under Development
 
 
 ## 💲 Donate
-<a href="https://www.buymeacoffee.com/rollno748" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 30px !important;width: 109px !important;" ></a> 
+<a href="https://www.buymeacoffee.com/rollno748" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="max-width:20%;" ></a> 
 
 Please rate a :star2: if you like it.
 
