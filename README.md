@@ -132,5 +132,5 @@ Under Development
 
 Please rate a :star2: if you like it.
 
-Please open up :bug: - If you experienced something.
+Please open up a :beetle: - If you experienced something.
  
