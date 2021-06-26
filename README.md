@@ -27,7 +27,7 @@ This plugin is an extended version of Kafkameter with restructured UI and additi
 * Copy the Jar to \<Jmeter Installed Directory\>/lib/ext/ for DI Jmeter \<Jmeter Installed Directory\>/di/plugins
 
 
-## Producer Elements
+## Producer Elements
 
 Configure Kafka properties by Adding ProducerConfig Element.
 
@@ -114,11 +114,11 @@ Add and Configure KafkaProducer Sampler to the thread group
 
 
 
-## Consumer Elements
+## Consumer Elements
 
 Under Development 
 
-## References
+## References
 
  * Plugin Overview: https://github.com/BrightTag/kafkameter  
  * How to add headers to message: https://stackoverflow.com/questions/29025627/adding-custom-headers-in-kafka-message
