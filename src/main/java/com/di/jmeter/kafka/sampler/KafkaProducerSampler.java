@@ -49,7 +49,7 @@ public class KafkaProducerSampler extends KafkaProducerTestElement
 		try {
 
 			if (Strings.isNullOrEmpty(getPartitionString())) {
-				producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), getKafkaMessageKey().toString(), getKafkaMessage());
+				producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), getKafkaMessageKey(), getKafkaMessage());
 				
 			} else {
 				final int partitionNumber = Integer.parseInt(getPartitionString());

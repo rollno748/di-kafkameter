@@ -39,7 +39,7 @@ public abstract class KafkaProducerTestElement extends AbstractTestElement
 	}
 	
 	public String getKafkaMessageKey() {
-		return kafkaMessageKey;
+		return kafkaMessageKey.isEmpty() ? null : kafkaMessageKey;
 	}
 
 	public void setKafkaMessageKey(String kafkaMessageKey) {

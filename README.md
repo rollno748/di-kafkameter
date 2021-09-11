@@ -38,7 +38,7 @@ Configure Kafka properties by Adding ProducerConfig Element.
 Add and Configure KafkaProducer Sampler to the thread group
 
 * Provide the kafka topic to which the messages needs to be posted
-* Kafka Message key - key for the message to publish the message
+* Kafka Message key - key for the message to publish the message (empty for null keys)
 * Kafka Message - Original message which needs to be posted
 * Partition String (Optional) - You can taget the posting of messages to particular partition by providing the partition number
 * Message Headers (Optional) - You can add headers to the messages which are being posted (It's possible to add more than one headers)
