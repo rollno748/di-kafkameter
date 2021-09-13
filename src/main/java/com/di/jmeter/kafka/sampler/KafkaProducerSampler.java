@@ -12,6 +12,7 @@ import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaException;
@@ -19,7 +20,6 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.di.jmeter.kafka.config.KafkaProducerConfig;
 import com.google.common.base.Strings;
 
 public class KafkaProducerSampler extends KafkaProducerTestElement
@@ -33,13 +33,11 @@ public class KafkaProducerSampler extends KafkaProducerTestElement
 
 	private KafkaProducer<String, Object> kafkaProducer;
 	private ProducerRecord<String, Object> producerRecord;
-	private byte[] byteKafkaMessage;
-	
+
 	@Override
 	public SampleResult sample(Entry e) {
 
 		SampleResult result = new SampleResult();
-		byteKafkaMessage = null;
 		result.setSampleLabel(getName());
 		result.setSamplerData(request());
 		result.setDataType(SampleResult.TEXT);
@@ -70,10 +68,9 @@ public class KafkaProducerSampler extends KafkaProducerTestElement
 				result.setRequestHeaders(headers.toString());
 			}
 			
-			byteKafkaMessage = getKafkaMessage().getBytes();
 			result.sampleStart();
 
-			produce(byteKafkaMessage, result);
+			produce(result);
 
 		} catch (Exception ex) {
 			LOGGER.info("Exception occurred while sending message to kafka");
@@ -112,11 +109,13 @@ public class KafkaProducerSampler extends KafkaProducerTestElement
 
 	
 
-	private String produce(byte[] byteKafkaMessage, SampleResult result) {
-		String resp = null;
+	private void produce(SampleResult result) {
+		if (this.kafkaProducer == null) {
+			this.kafkaProducer = getKafkaProducerClient();
+		}
 
 		if (this.kafkaProducer == null) {
-			this.kafkaProducer = KafkaProducerConfig.getKafkaProducerClient();
+			throw new RuntimeException("Kafka Producer Client not found. Check Variable Name in KafkaProducerSampler.");
 		}
 
 		try {
@@ -131,7 +130,6 @@ public class KafkaProducerSampler extends KafkaProducerTestElement
 			LOGGER.info("Kafka producer config not initialized properly.. Check the config element");
 			handleException(result, e);
 		}
-		return resp;
 	}
 
 	private SampleResult handleException(SampleResult result, Exception ex) {
@@ -148,4 +146,8 @@ public class KafkaProducerSampler extends KafkaProducerTestElement
 		return requestBody.toString();
 	}
 
+	@SuppressWarnings("unchecked")
+	private KafkaProducer<String, Object> getKafkaProducerClient() {
+		return (KafkaProducer<String, Object>) JMeterContextService.getContext().getVariables().getObject(getKafkaProducerClientVariableName());
+	}
 }

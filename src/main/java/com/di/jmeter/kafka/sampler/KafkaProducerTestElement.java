@@ -15,12 +15,18 @@ public abstract class KafkaProducerTestElement extends AbstractTestElement
 
 	private static final long serialVersionUID = 2414070493635061825L;
 
+	private String kafkaProducerClientVariableName;
 	private String kafkaTopic;
 	private String partitionString;
 	private String kafkaMessageKey;
 	private String kafkaMessage;
 	private List<VariableSettings> messageHeaders;
-	
+
+	public String getKafkaProducerClientVariableName() {
+		return kafkaProducerClientVariableName;
+	}
+
+	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
 
 	public String getKafkaTopic() {
 		return kafkaTopic;

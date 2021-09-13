@@ -19,7 +19,9 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 
 	public KafkaProducerConfigBeanInfo() {
 		super(KafkaProducerConfig.class);
-		
+
+		createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaProducerClientVariableName"});
+
 		createPropertyGroup("KafkaConnectionConfigs", new String[] {"kafkaBrokers", "batchSize", "clientId", "serializerKey", "serializerValue"});
 		//Additional Configs
 		createPropertyGroup("AdditionalConfigs", new String[] {"extraConfigs"});
@@ -27,6 +29,12 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		createPropertyGroup("SSLConfigs", new String[] {"isSsl", 
 				"kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslTruststore", "kafkaSslTruststorePassword"});
 
+
+		PropertyDescriptor kafkaProducerClientVariableNamePropDesc =  property("kafkaProducerClientVariableName");
+		kafkaProducerClientVariableNamePropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+		kafkaProducerClientVariableNamePropDesc.setValue(DEFAULT, "KafkaProducerClient");
+		kafkaProducerClientVariableNamePropDesc.setDisplayName("Variable Name for Kafka Producer Client");
+		kafkaProducerClientVariableNamePropDesc.setShortDescription("Variable Name to use in KafkaProducerSampler");
 
 		PropertyDescriptor propDesc =  property("kafkaBrokers");
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE); 
@@ -42,7 +50,7 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		
 		propDesc =  property("clientId");
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE); 
-		propDesc.setValue(DEFAULT, "Jmeter-Producer-1");
+		propDesc.setValue(DEFAULT, "JMeter-Producer-1");
 		propDesc.setDisplayName("Client ID");
 		propDesc.setShortDescription("Client ID - Unique Id to connect to Broker");
 
@@ -56,7 +64,7 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE); 
 		propDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringSerializer");
 		propDesc.setDisplayName("Serializer Value");
-		propDesc.setShortDescription("Serializer Value");
+		propDesc.setShortDescription("Serializer Value (must accept String input)");
 		
 		PropertyDescriptor configProps = property("extraConfigs", TypeEditor.TableEditor);
 		configProps.setValue(TableEditor.CLASSNAME, VariableSettings.class.getName());
@@ -75,25 +83,25 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		propDesc =  property("kafkaSslKeystore");
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE); 
 		propDesc.setValue(DEFAULT, "");
-		propDesc.setDisplayName("KafkaSSLKeystore");
-		propDesc.setShortDescription("Kafka SSL Keystore");
+		propDesc.setDisplayName("KafkaSSLKeystore Location");
+		propDesc.setShortDescription("Kafka SSL Keystore file location");
 
 		propDesc =  property("kafkaSslKeystorePassword", TypeEditor.PasswordEditor);
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE); 
 		propDesc.setValue(DEFAULT, "Chang3M3");
-		propDesc.setDisplayName("KafkaSSLKeystorePassword");
+		propDesc.setDisplayName("KafkaSSLKeystore Password");
 		propDesc.setShortDescription("Kafka SSL Keystore Password");
 
 		propDesc =  property("kafkaSslTruststore");
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE); 
 		propDesc.setValue(DEFAULT, "");
-		propDesc.setDisplayName("KafkaSSLTruststore");
-		propDesc.setShortDescription("Kafka SSL Truststore");
+		propDesc.setDisplayName("KafkaSSLTruststore Location");
+		propDesc.setShortDescription("Kafka SSL Truststore file location");
 		
 		propDesc =  property("kafkaSslTruststorePassword", TypeEditor.PasswordEditor);
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE); 
 		propDesc.setValue(DEFAULT, "Chang3M3");
-		propDesc.setDisplayName("KafkaSSLTruststorePassword");
+		propDesc.setDisplayName("KafkaSSLTruststore Password");
 		propDesc.setShortDescription("Kafka SSL Truststore Password");
 		
 
