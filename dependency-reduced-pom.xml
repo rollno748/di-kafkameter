@@ -4,7 +4,7 @@
   <groupId>di-kafkameter</groupId>
   <artifactId>di-kafkameter</artifactId>
   <name>di-kafkameter</name>
-  <version>1.0</version>
+  <version>1.1</version>
   <description>Kafka plugin for JMeter</description>
   <build>
     <resources>
@@ -68,9 +68,9 @@
     </dependency>
   </dependencies>
   <properties>
-    <jdk.version>1.8</jdk.version>
-    <kafka.client.version>2.5.0</kafka.client.version>
     <di-jmeter-version>5.2.1</di-jmeter-version>
+    <kafka.client.version>2.5.0</kafka.client.version>
+    <jdk.version>1.8</jdk.version>
     <jmeter.lib.scope>provided</jmeter.lib.scope>
   </properties>
 </project>

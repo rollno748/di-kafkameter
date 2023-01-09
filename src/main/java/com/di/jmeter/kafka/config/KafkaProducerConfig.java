@@ -9,7 +9,6 @@ import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testbeans.TestBeanHelper;
 import org.apache.jmeter.testelement.TestStateListener;
-import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -27,8 +26,10 @@ public class KafkaProducerConfig extends ConfigTestElement
 	private KafkaProducer<String, Object> kafkaProducer;
 	private List<VariableSettings> extraConfigs;
 
+	private String kafkaProducerClientVariableName;
+
 	private String kafkaBrokers;
-	private String batchSize; // dedault: 16384
+	private String batchSize; // default: 16384
 	private String clientId;
 	private String serializerKey;
 	private String serializerValue;
@@ -38,8 +39,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	private String kafkaSslKeystorePassword; // Keystore Password
 	private String kafkaSslTruststore;
 	private String kafkaSslTruststorePassword;
-
-	private static final String KAFKA_PRODUCER_CLIENT = "kafkaClient";
 
 	@Override
 	public void addConfigElement(ConfigElement config) {
@@ -57,7 +56,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 		TestBeanHelper.prepare(this);
 		JMeterVariables variables = getThreadContext().getVariables();
 
-		if (variables.getObject(KAFKA_PRODUCER_CLIENT) != null) {
+		if (variables.getObject(kafkaProducerClientVariableName) != null) {
 			LOGGER.error("Kafka Client is already running..");
 		} else {
 			synchronized (this) {
@@ -92,7 +91,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 
 					kafkaProducer = new KafkaProducer<String, Object>(props);
 
-					variables.putObject(KAFKA_PRODUCER_CLIENT, kafkaProducer);
+					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
 					LOGGER.info("Kafka Producer client successfully Initialized");
 				} catch (Exception e) {
 					LOGGER.error("Error establishing Kafka producer client !!");
@@ -128,6 +127,10 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public void setKafkaProducer(KafkaProducer<String, Object> kafkaProducer) {
 		this.kafkaProducer = kafkaProducer;
 	}
+
+	public String getKafkaProducerClientVariableName() { return kafkaProducerClientVariableName; }
+
+	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
 
 	public String getKafkaBrokers() {
 		return kafkaBrokers;
@@ -215,11 +218,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 
 	public void setSerializerValue(String serializerValue) {
 		this.serializerValue = serializerValue;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static KafkaProducer<String, Object> getKafkaProducerClient() {
-		return (KafkaProducer<String, Object>) JMeterContextService.getContext().getVariables().getObject(KAFKA_PRODUCER_CLIENT);
 	}
 
 }
