@@ -1,17 +1,23 @@
 package com.di.jmeter.kafka.sampler;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import com.di.jmeter.kafka.utils.VariableSettings;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.engine.util.ConfigMergabilityIndicator;
+import org.apache.jmeter.gui.Searchable;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testbeans.TestBean;
+import org.apache.jmeter.testelement.AbstractTestElement;
 import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -22,14 +28,21 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 
-public class KafkaProducerSampler extends KafkaProducerTestElement
-		implements Sampler, TestBean, ConfigMergabilityIndicator {
+public class KafkaProducerSampler extends AbstractTestElement
+		implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(KafkaProducerSampler.class);
 	private static final long serialVersionUID = -1299097780294947281L;
 
 	private static final Set<String> APPLIABLE_CONFIG_CLASSES = new HashSet<>(
 			Arrays.asList("org.apache.jmeter.config.gui.SimpleConfigGui"));
+
+	private String kafkaProducerClientVariableName;
+	private String kafkaTopic;
+	private String partitionString;
+	private String kafkaMessageKey;
+	private String kafkaMessage;
+	private List<VariableSettings> messageHeaders;
 
 	private KafkaProducer<String, Object> kafkaProducer;
 	private ProducerRecord<String, Object> producerRecord;
@@ -144,6 +157,53 @@ public class KafkaProducerSampler extends KafkaProducerTestElement
 		StringBuilder requestBody = new StringBuilder();
 		requestBody.append("KakfaMessage: \n").append(getKafkaMessage()).append("\n");
 		return requestBody.toString();
+	}
+
+	//Getters Setters
+	public String getKafkaProducerClientVariableName() {
+		return kafkaProducerClientVariableName;
+	}
+
+	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
+
+	public String getKafkaTopic() {
+		return kafkaTopic;
+	}
+
+	public void setKafkaTopic(String kafkaTopic) {
+		this.kafkaTopic = kafkaTopic;
+	}
+
+	public String getPartitionString() {
+		return partitionString;
+	}
+
+	public void setPartitionString(String partitionString) {
+		this.partitionString = partitionString;
+	}
+
+	public String getKafkaMessageKey() {
+		return kafkaMessageKey.isEmpty() ? null : kafkaMessageKey;
+	}
+
+	public void setKafkaMessageKey(String kafkaMessageKey) {
+		this.kafkaMessageKey = kafkaMessageKey;
+	}
+
+	public String getKafkaMessage() {
+		return kafkaMessage;
+	}
+
+	public void setKafkaMessage(String kafkaMessage) {
+		this.kafkaMessage = kafkaMessage;
+	}
+
+	public List<VariableSettings> getMessageHeaders() {
+		return messageHeaders;
+	}
+
+	public void setMessageHeaders(List<VariableSettings> messageHeaders) {
+		this.messageHeaders = messageHeaders;
 	}
 
 	@SuppressWarnings("unchecked")
