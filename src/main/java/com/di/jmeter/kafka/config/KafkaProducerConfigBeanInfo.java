@@ -15,7 +15,7 @@ import com.di.jmeter.kafka.utils.VariableSettings;
 
 public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 	
-	private static Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfigBeanInfo.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfigBeanInfo.class);
 
 	public KafkaProducerConfigBeanInfo() {
 		super(KafkaProducerConfig.class);
@@ -78,7 +78,7 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
 		propDesc.setValue(DEFAULT, Boolean.FALSE);
 		propDesc.setDisplayName("Enable SSL");
-		propDesc.setShortDescription("Boolean to enable/disbale SSL");
+		propDesc.setShortDescription("Boolean to enable/disable SSL");
 
 		propDesc =  property("kafkaSslKeystore");
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE); 

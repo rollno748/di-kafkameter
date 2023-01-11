@@ -20,7 +20,7 @@ import com.di.jmeter.kafka.utils.VariableSettings;
 public class KafkaProducerConfig extends ConfigTestElement
 		implements ConfigElement, TestBean, TestStateListener, Serializable {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfig.class);
 	private static final long serialVersionUID = 3328926106250797599L;
 
 	private KafkaProducer<String, Object> kafkaProducer;
@@ -69,7 +69,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 					props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, getSerializerKey());
 					props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, getSerializerValue());
 
-					LOGGER.debug("Additional Cofig Size::: " + getExtraConfigs().size());
+					LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
 					if (getExtraConfigs().size() >= 1) {
 						LOGGER.info("Setting up Additional properties");
 						for (int i=0; i<getExtraConfigs().size(); i++) {
@@ -80,7 +80,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 
 					// check if kafka security protocol is SSL or PLAINTEXT (default)
 					LOGGER.info("Kafka SSL properties status: " + getIsSsl());
-					if (isSsl == true) {
+					if (isSsl) {
 						LOGGER.info("Setting up Kafka SSL properties");
 						props.put("security.protocol", "SSL");
 						props.put("ssl.keystore.location", getKafkaSslKeystore());
