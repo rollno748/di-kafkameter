@@ -23,11 +23,11 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaProducerClientVariableName"});
 
 		createPropertyGroup("KafkaConnectionConfigs", new String[] {"kafkaBrokers", "batchSize", "clientId", "serializerKey", "serializerValue"});
+		//Security
+		createPropertyGroup("SSLConfigs", new String[] {"isSsl",
+				"kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslTruststore", "kafkaSslTruststorePassword"});
 		//Additional Configs
 		createPropertyGroup("AdditionalConfigs", new String[] {"extraConfigs"});
-		//SSL
-		createPropertyGroup("SSLConfigs", new String[] {"isSsl", 
-				"kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslTruststore", "kafkaSslTruststorePassword"});
 
 
 		PropertyDescriptor kafkaProducerClientVariableNamePropDesc =  property("kafkaProducerClientVariableName");
@@ -103,7 +103,6 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		propDesc.setValue(DEFAULT, "Chang3M3");
 		propDesc.setDisplayName("KafkaSSLTruststore Password");
 		propDesc.setShortDescription("Kafka SSL Truststore Password");
-		
 
 		if (LOGGER.isDebugEnabled()) {
 			String pubDescriptorsAsString = Arrays.stream(getPropertyDescriptors())
