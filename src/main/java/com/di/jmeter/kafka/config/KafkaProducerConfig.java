@@ -33,12 +33,12 @@ public class KafkaProducerConfig extends ConfigTestElement
 	private String clientId;
 	private String serializerKey;
 	private String serializerValue;
-
-	private boolean isSsl;
+	private String securityType;
 	private String kafkaSslKeystore; // Kafka ssl keystore (include path information); e.g; "server.keystore.jks"
 	private String kafkaSslKeystorePassword; // Keystore Password
 	private String kafkaSslTruststore;
 	private String kafkaSslTruststorePassword;
+	private String kafkaSslPrivateKeyPass;
 
 	@Override
 	public void addConfigElement(ConfigElement config) {
@@ -79,8 +79,8 @@ public class KafkaProducerConfig extends ConfigTestElement
 					}
 
 					// check if kafka security protocol is SSL or PLAINTEXT (default)
-					LOGGER.info("Kafka SSL properties status: " + getIsSsl());
-					if (isSsl) {
+					LOGGER.info("Kafka security type: " + getSecurityType());
+					if (true) {
 						LOGGER.info("Setting up Kafka SSL properties");
 						props.put("security.protocol", "SSL");
 						props.put("ssl.keystore.location", getKafkaSslKeystore());
@@ -124,10 +124,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 		return kafkaProducer;
 	}
 
-	public void setKafkaProducer(KafkaProducer<String, Object> kafkaProducer) {
-		this.kafkaProducer = kafkaProducer;
-	}
-
 	public String getKafkaProducerClientVariableName() { return kafkaProducerClientVariableName; }
 
 	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
@@ -140,12 +136,12 @@ public class KafkaProducerConfig extends ConfigTestElement
 		this.kafkaBrokers = kafkaBrokers;
 	}
 
-	public boolean getIsSsl() {
-		return isSsl;
+	public String getSecurityType() {
+		return securityType;
 	}
 
-	public void setIsSsl(boolean isSsl) {
-		this.isSsl = isSsl;
+	public void setSecurityType(String securityType) {
+		this.securityType = securityType;
 	}
 
 	public String getKafkaSslKeystore() {
@@ -178,6 +174,14 @@ public class KafkaProducerConfig extends ConfigTestElement
 
 	public void setKafkaSslTruststorePassword(String kafkaSslTruststorePassword) {
 		this.kafkaSslTruststorePassword = kafkaSslTruststorePassword;
+	}
+
+	public String getKafkaSslPrivateKeyPass() {
+		return kafkaSslPrivateKeyPass;
+	}
+
+	public void setKafkaSslPrivateKeyPass(String kafkaSslPrivateKeyPass) {
+		this.kafkaSslPrivateKeyPass = kafkaSslPrivateKeyPass;
 	}
 
 	public void setExtraConfigs(List<VariableSettings> extraConfigs) {

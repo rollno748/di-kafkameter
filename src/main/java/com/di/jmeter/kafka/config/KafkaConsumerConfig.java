@@ -9,8 +9,6 @@ import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,30 +18,27 @@ import java.util.Properties;
 
 public class KafkaConsumerConfig extends ConfigTestElement
         implements ConfigElement, TestBean, TestStateListener, Serializable {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfig.class);
     private static final long serialVersionUID = 3328926106250797599L;
 
-//    private KafkaProducer<String, Object> kafkaProducer;
     private KafkaConsumer<String, Object> kafkaConsumer;
     private List<VariableSettings> extraConfigs;
     private String kafkaConsumerClientVariableName;
     private String kafkaBrokers;
-    private String batchSize; // default: 16384
-    private String clientId;
-    private String serializerKey;
-    private String serializerValue;
-    private boolean isSsl;
+    private String groupId;
+    private String deSerializerKey;
+    private String deSerializerValue;
+    private String securityType;
     private String kafkaSslKeystore; // Kafka ssl keystore (include path information); e.g; "server.keystore.jks"
     private String kafkaSslKeystorePassword; // Keystore Password
     private String kafkaSslTruststore;
     private String kafkaSslTruststorePassword;
+    private String kafkaSslPrivateKeyPass;
 
     @Override
     public void addConfigElement(ConfigElement config) {
 
     }
-
     @Override
     public boolean expectsModification() {
         return false;
@@ -54,6 +49,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
         this.setRunningVersion(true);
         TestBeanHelper.prepare(this);
         JMeterVariables variables = getThreadContext().getVariables();
+        KafkaConsumerConfigBeanInfo.getSecurityTypeAsInt(getSecurityType());
 
         if (variables.getObject(kafkaConsumerClientVariableName) != null) {
             LOGGER.error("Kafka consumer is already running..");
@@ -63,10 +59,9 @@ public class KafkaConsumerConfig extends ConfigTestElement
                     Properties props = new Properties();
 
                     props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
-//                    props.put(ConsumerConfig.BATCH_SIZE_CONFIG, getBatchSize());
-                    props.put(ConsumerConfig.GROUP_ID_CONFIG, getClientId());//groupId
-                    props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, getSerializerKey());
-                    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, getSerializerValue());
+                    props.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());//groupId
+                    props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, getDeSerializerKey());
+                    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, getDeSerializerValue());
 
                     LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
                     if (getExtraConfigs().size() >= 1) {
@@ -78,8 +73,8 @@ public class KafkaConsumerConfig extends ConfigTestElement
                     }
 
                     // check if kafka security protocol is SSL or PLAINTEXT (default)
-                    LOGGER.info("Kafka SSL properties status: " + getIsSsl());
-                    if (isSsl) {
+                    LOGGER.info("Kafka security properties status: " + true);
+                    if (true) {
                         LOGGER.info("Setting up Kafka SSL properties");
                         props.put("security.protocol", "SSL");
                         props.put("ssl.keystore.location", getKafkaSslKeystore());
@@ -88,11 +83,11 @@ public class KafkaConsumerConfig extends ConfigTestElement
                         props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
                     }
 
-                    kafkaConsumer = new KafkaConsumer<String, Object>(props);
+                    kafkaConsumer = new KafkaConsumer<>(props);
                     variables.putObject(kafkaConsumerClientVariableName, kafkaConsumer);
                     LOGGER.info("Kafka consumer client successfully Initialized");
                 } catch (Exception e) {
-                    LOGGER.error("Error establishing Kafka consumer client !!");
+                    LOGGER.error("Error establishing kafka consumer client !!");
                     e.printStackTrace();
                 }
             }
@@ -119,9 +114,6 @@ public class KafkaConsumerConfig extends ConfigTestElement
     public KafkaConsumer<String, Object> getKafkaConsumer() {
         return kafkaConsumer;
     }
-    public void setKafkaConsumer(KafkaConsumer<String, Object> kafkaConsumer) {
-        this.kafkaConsumer = kafkaConsumer;
-    }
     public String getKafkaConsumerClientVariableName() {
         return kafkaConsumerClientVariableName;
     }
@@ -135,12 +127,15 @@ public class KafkaConsumerConfig extends ConfigTestElement
     public void setKafkaBrokers(String kafkaBrokers) {
         this.kafkaBrokers = kafkaBrokers;
     }
-    public boolean getIsSsl() {
-        return isSsl;
+
+    public String getSecurityType() {
+        return securityType;
     }
-    public void setIsSsl(boolean isSsl) {
-        this.isSsl = isSsl;
+
+    public void setSecurityType(String securityType) {
+        this.securityType = securityType;
     }
+
     public String getKafkaSslKeystore() {
         return kafkaSslKeystore;
     }
@@ -165,34 +160,39 @@ public class KafkaConsumerConfig extends ConfigTestElement
     public void setKafkaSslTruststorePassword(String kafkaSslTruststorePassword) {
         this.kafkaSslTruststorePassword = kafkaSslTruststorePassword;
     }
+    public String getKafkaSslPrivateKeyPass() {
+        return kafkaSslPrivateKeyPass;
+    }
+
+    public void setKafkaSslPrivateKeyPass(String kafkaSslPrivateKeyPass) {
+        this.kafkaSslPrivateKeyPass = kafkaSslPrivateKeyPass;
+    }
     public void setExtraConfigs(List<VariableSettings> extraConfigs) {
         this.extraConfigs = extraConfigs;
     }
     public List<VariableSettings> getExtraConfigs() {
         return this.extraConfigs;
     }
-    public String getBatchSize() {
-        return batchSize;
+    public String getGroupId() {
+        return groupId;
     }
-    public void setBatchSize(String batchSize) {
-        this.batchSize = batchSize;
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
-    public String getClientId() {
-        return clientId;
+
+    public String getDeSerializerKey() {
+        return deSerializerKey;
     }
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
+
+    public void setDeSerializerKey(String deSerializerKey) {
+        this.deSerializerKey = deSerializerKey;
     }
-    public String getSerializerKey() {
-        return serializerKey;
+
+    public String getDeSerializerValue() {
+        return deSerializerValue;
     }
-    public void setSerializerKey(String serializerKey) {
-        this.serializerKey = serializerKey;
-    }
-    public String getSerializerValue() {
-        return serializerValue;
-    }
-    public void setSerializerValue(String serializerValue) {
-        this.serializerValue = serializerValue;
+
+    public void setDeSerializerValue(String deSerializerValue) {
+        this.deSerializerValue = deSerializerValue;
     }
 }
