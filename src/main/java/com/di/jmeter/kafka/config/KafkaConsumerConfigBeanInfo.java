@@ -137,9 +137,9 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         }
         return -1;
     }
-    public static String[] getSecurityTypeTags() {
-        String[] copy = new String[SECURITYTYPE_TAGS.length];
-        System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
-        return copy;
-    }
+//    public static String[] getSecurityTypeTags() {
+//        String[] copy = new String[SECURITYTYPE_TAGS.length];
+//        System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
+//        return copy;
+//    }
 }

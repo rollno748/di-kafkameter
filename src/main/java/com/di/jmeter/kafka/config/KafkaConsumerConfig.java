@@ -6,6 +6,7 @@ import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testbeans.TestBeanHelper;
 import org.apache.jmeter.testelement.TestStateListener;
+import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -18,7 +19,7 @@ import java.util.Properties;
 
 public class KafkaConsumerConfig extends ConfigTestElement
         implements ConfigElement, TestBean, TestStateListener, Serializable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerConfig.class);
     private static final long serialVersionUID = 3328926106250797599L;
 
     private KafkaConsumer<String, Object> kafkaConsumer;
@@ -49,7 +50,6 @@ public class KafkaConsumerConfig extends ConfigTestElement
         this.setRunningVersion(true);
         TestBeanHelper.prepare(this);
         JMeterVariables variables = getThreadContext().getVariables();
-        KafkaConsumerConfigBeanInfo.getSecurityTypeAsInt(getSecurityType());
 
         if (variables.getObject(kafkaConsumerClientVariableName) != null) {
             LOGGER.error("Kafka consumer is already running..");
@@ -72,15 +72,15 @@ public class KafkaConsumerConfig extends ConfigTestElement
                         }
                     }
 
-                    // check if kafka security protocol is SSL or PLAINTEXT (default)
-                    LOGGER.info("Kafka security properties status: " + true);
-                    if (true) {
-                        LOGGER.info("Setting up Kafka SSL properties");
-                        props.put("security.protocol", "SSL");
-                        props.put("ssl.keystore.location", getKafkaSslKeystore());
-                        props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
+                    if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
+                        LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
+                        LOGGER.info(String.format("Setting up Kafka %d properties"), getSecurityType());
+                        props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
                         props.put("ssl.truststore.location", getKafkaSslTruststore());
                         props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
+                        props.put("ssl.keystore.location", getKafkaSslKeystore());
+                        props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
+                        props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
                     }
 
                     kafkaConsumer = new KafkaConsumer<>(props);
@@ -102,7 +102,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
     @Override
     public void testEnded() {
         kafkaConsumer.close();
-        LOGGER.info("Kafka Producer client connection terminated");
+        LOGGER.info("Kafka consumer client connection terminated");
     }
 
     @Override

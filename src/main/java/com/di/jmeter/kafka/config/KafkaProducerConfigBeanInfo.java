@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import org.apache.jmeter.testbeans.BeanInfoSupport;
 import org.apache.jmeter.testbeans.gui.TableEditor;
 import org.apache.jmeter.testbeans.gui.TypeEditor;
@@ -147,9 +146,9 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		}
 		return -1;
 	}
-	public static String[] getSecurityTypeTags() {
-		String[] copy = new String[SECURITYTYPE_TAGS.length];
-		System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
-		return copy;
-	}
+//	public static String[] getSecurityTypeTags() {
+//		String[] copy = new String[SECURITYTYPE_TAGS.length];
+//		System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
+//		return copy;
+//	}
 }

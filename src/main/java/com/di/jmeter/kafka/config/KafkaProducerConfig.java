@@ -78,15 +78,15 @@ public class KafkaProducerConfig extends ConfigTestElement
 						}
 					}
 
-					// check if kafka security protocol is SSL or PLAINTEXT (default)
-					LOGGER.info("Kafka security type: " + getSecurityType());
-					if (true) {
-						LOGGER.info("Setting up Kafka SSL properties");
-						props.put("security.protocol", "SSL");
-						props.put("ssl.keystore.location", getKafkaSslKeystore());
-						props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
+					if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
+						LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
+						LOGGER.info(String.format("Setting up Kafka %d properties"), getSecurityType());
+						props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 						props.put("ssl.truststore.location", getKafkaSslTruststore());
 						props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
+						props.put("ssl.keystore.location", getKafkaSslKeystore());
+						props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
+						props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
 					}
 
 					kafkaProducer = new KafkaProducer<String, Object>(props);
