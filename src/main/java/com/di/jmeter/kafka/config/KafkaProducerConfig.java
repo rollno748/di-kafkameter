@@ -72,15 +72,15 @@ public class KafkaProducerConfig extends ConfigTestElement
 					LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
 					if (getExtraConfigs().size() >= 1) {
 						LOGGER.info("Setting up Additional properties");
-						for (int i=0; i<getExtraConfigs().size(); i++) {
-							props.put(getExtraConfigs().get(i).getConfigKey(), getExtraConfigs().get(i).getConfigValue());
-							LOGGER.debug(String.format("Adding property : %s", getExtraConfigs().get(i).getConfigKey()));
+						for (VariableSettings entry : getExtraConfigs()){
+							props.put(entry.getConfigKey(), entry.getConfigValue());
+							LOGGER.debug(String.format("Adding property : %s", entry.getConfigKey()));
 						}
 					}
 
 					if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
 						LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
-						LOGGER.info(String.format("Setting up Kafka %d properties"), getSecurityType());
+						LOGGER.info(String.format("Setting up Kafka %s properties"), getSecurityType());
 						props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 						props.put("ssl.truststore.location", getKafkaSslTruststore());
 						props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
@@ -119,7 +119,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	}
 
 	// Getters and setters
-
 	public KafkaProducer<String, Object> getKafkaProducer() {
 		return kafkaProducer;
 	}
