@@ -37,9 +37,9 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaConsumerClientVariableName"});
         //Connection configs
         createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "groupId", "deSerializerKey", "deSerializerValue"});
-        //Security
+        //Security config
         createPropertyGroup("Security", new String[] {SECURITYTYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
-        //Additional Configs
+        //Additional c:qqonfigs
         createPropertyGroup("Additional Configs", new String[] {"extraConfigs"});
 
         PropertyDescriptor consumerClientVariableNamePropDesc =  property("kafkaConsumerClientVariableName");
@@ -59,6 +59,12 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         connectionConfigpropDesc.setValue(DEFAULT, "consumer-group-1");
         connectionConfigpropDesc.setDisplayName("Group ID");
         connectionConfigpropDesc.setShortDescription("Group ID - Unique Id to identify the consumer group");
+
+        connectionConfigpropDesc =  property("topic");
+        connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+        connectionConfigpropDesc.setValue(DEFAULT, "kafka_topic");
+        connectionConfigpropDesc.setDisplayName("Topic");
+        connectionConfigpropDesc.setShortDescription("Kafka Topic for the Consumer to subscribe");
 
         connectionConfigpropDesc =  property("deSerializerKey");
         connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);

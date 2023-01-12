@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -27,6 +28,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
     private String kafkaConsumerClientVariableName;
     private String kafkaBrokers;
     private String groupId;
+    private String topic;
     private String deSerializerKey;
     private String deSerializerValue;
     private String securityType;
@@ -84,6 +86,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
                     }
 
                     kafkaConsumer = new KafkaConsumer<>(props);
+                    kafkaConsumer.subscribe(Collections.singletonList(getTopic()));
                     variables.putObject(kafkaConsumerClientVariableName, kafkaConsumer);
                     LOGGER.info("Kafka consumer client successfully Initialized");
                 } catch (Exception e) {
@@ -178,7 +181,12 @@ public class KafkaConsumerConfig extends ConfigTestElement
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
-
+    public String getTopic() {
+        return topic;
+    }
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
     public String getDeSerializerKey() {
         return deSerializerKey;
     }

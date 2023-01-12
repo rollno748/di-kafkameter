@@ -61,28 +61,23 @@ public class KafkaProducerSampler extends AbstractTestElement
 
 			if (Strings.isNullOrEmpty(getPartitionString())) {
 				producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), getKafkaMessageKey(), getKafkaMessage());
-				
 			} else {
 				final int partitionNumber = Integer.parseInt(getPartitionString());
 				producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), partitionNumber, getKafkaMessageKey(), getKafkaMessage());
 			}
 			
 			LOGGER.debug("Additional Headers Size::: "+ getMessageHeaders().size());
-
 			if (getMessageHeaders().size() >= 1) {
 				StringBuilder headers = new StringBuilder(); 
 				LOGGER.debug("Setting up additional header to message");
-				for (int i = 0; i < getMessageHeaders().size(); i++) {
-					producerRecord.headers().add(new RecordHeader(getMessageHeaders().get(i).getHeaderKey(),
-							getMessageHeaders().get(i).getHeaderValue().getBytes()));
-					headers.append(getMessageHeaders().get(i).getHeaderKey() + ": " +getMessageHeaders().get(i).getHeaderValue() + "\n");
-					LOGGER.debug(String.format("Adding Headers : %s", getMessageHeaders().get(i).getConfigKey()));
+				for (VariableSettings entry : getMessageHeaders()){
+					producerRecord.headers().add(new RecordHeader(entry.getHeaderKey(), entry.getHeaderValue().getBytes()));
+					headers.append(entry.getHeaderKey() + ": " +entry.getHeaderValue() + "\n");
+					LOGGER.debug(String.format("Adding Headers : %s", entry.getHeaderKey()));
 				}
 				result.setRequestHeaders(headers.toString());
 			}
-			
 			result.sampleStart();
-
 			produce(result);
 
 		} catch (Exception ex) {
@@ -91,14 +86,11 @@ public class KafkaProducerSampler extends AbstractTestElement
 		} finally {
 			result.sampleEnd();
 		}
-
 		return result;
 	}
 
-
 	@Override
 	public void testStarted() {
-
 	}
 
 	@Override
@@ -120,25 +112,18 @@ public class KafkaProducerSampler extends AbstractTestElement
 		return APPLIABLE_CONFIG_CLASSES.contains(guiClass);
 	}
 
-	
-
 	private void produce(SampleResult result) {
-		if (this.kafkaProducer == null) {
-			this.kafkaProducer = getKafkaProducerClient();
-		}
 
-		if (this.kafkaProducer == null) {
+		if (this.kafkaProducer == null && getKafkaProducerClient() != null) {
+			this.kafkaProducer = getKafkaProducerClient();
+		}else{
 			throw new RuntimeException("Kafka Producer Client not found. Check Variable Name in KafkaProducerSampler.");
 		}
 
 		try {
-
 			kafkaProducer.send(producerRecord);
 			result.setResponseData(getKafkaMessage(), StandardCharsets.UTF_8.name());
-			result.setSuccessful(true);
-			result.setResponseCode("200");
-			result.setResponseMessageOK();
-
+			result.setResponseOK();
 		} catch (KafkaException e) {
 			LOGGER.info("Kafka producer config not initialized properly.. Check the config element");
 			handleException(result, e);
@@ -155,7 +140,7 @@ public class KafkaProducerSampler extends AbstractTestElement
 
 	private String request() {
 		StringBuilder requestBody = new StringBuilder();
-		requestBody.append("KakfaMessage: \n").append(getKafkaMessage()).append("\n");
+		requestBody.append("Message: \n").append(getKafkaMessage()).append("\n");
 		return requestBody.toString();
 	}
 

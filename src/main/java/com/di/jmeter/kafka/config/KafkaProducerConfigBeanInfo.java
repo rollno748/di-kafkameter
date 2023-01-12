@@ -36,13 +36,12 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		super(KafkaProducerConfig.class);
 
 		createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaProducerClientVariableName"});
-
+		//Connection configs
 		createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "batchSize", "clientId", "serializerKey", "serializerValue"});
-		//Security
+		//Security configs
 		createPropertyGroup("Security", new String[] { SECURITYTYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
-		//Additional Configs
+		//Additional configs
 		createPropertyGroup("Additional Configs", new String[] {"extraConfigs"});
-
 
 		PropertyDescriptor kafkaProducerClientVariableNamePropDesc =  property("kafkaProducerClientVariableName");
 		kafkaProducerClientVariableNamePropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
