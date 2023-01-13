@@ -6,7 +6,6 @@ import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testbeans.TestBeanHelper;
 import org.apache.jmeter.testelement.TestStateListener;
-import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -64,6 +63,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
                     props.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());//groupId
                     props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, getDeSerializerKey());
                     props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, getDeSerializerValue());
+                    props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 
                     LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
                     if (getExtraConfigs().size() >= 1) {
@@ -77,7 +77,6 @@ public class KafkaConsumerConfig extends ConfigTestElement
                     if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
                         LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
                         LOGGER.info(String.format("Setting up Kafka %s properties"), getSecurityType());
-                        props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
                         props.put("ssl.truststore.location", getKafkaSslTruststore());
                         props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
                         props.put("ssl.keystore.location", getKafkaSslKeystore());

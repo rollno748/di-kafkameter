@@ -68,6 +68,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 					props.put(ProducerConfig.CLIENT_ID_CONFIG, getClientId());
 					props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, getSerializerKey());
 					props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, getSerializerValue());
+					props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 
 					LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
 					if (getExtraConfigs().size() >= 1) {
@@ -81,7 +82,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 					if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
 						LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
 						LOGGER.info(String.format("Setting up Kafka %s properties"), getSecurityType());
-						props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 						props.put("ssl.truststore.location", getKafkaSslTruststore());
 						props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
 						props.put("ssl.keystore.location", getKafkaSslKeystore());

@@ -43,6 +43,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
         result.setDataEncoding(StandardCharsets.UTF_8.name());
 
         try{
+            result.sampleStart();
             this.readMessage(result);
         }catch (KafkaException e){
             LOGGER.info("Kafka producer config not initialized properly.. Check the config element");
