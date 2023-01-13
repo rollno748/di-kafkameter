@@ -1,6 +1,5 @@
 package com.di.jmeter.kafka.sampler;
 
-import com.di.jmeter.kafka.config.KafkaConsumerConfig;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.engine.util.ConfigMergabilityIndicator;
 import org.apache.jmeter.gui.Searchable;
@@ -13,10 +12,8 @@ import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,13 +22,14 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Properties;
 
 public class KafkaConsumerSampler extends AbstractTestElement
         implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerSampler.class);
     private KafkaConsumer<String, Object> kafkaConsumer;
     private String kafkaConsumerClientVariableName;
+    private String commitType;
+    private boolean autoCommit;
     private final long READ_TIMEOUT = 100;
 
     @Override
@@ -82,6 +80,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
     private String getKafkaMessage() {
         return null;
     }
+
     private SampleResult handleException(SampleResult result, Exception ex) {
         result.setResponseMessage("Error sending message to kafka topic");
         result.setResponseCode("500");
@@ -121,6 +120,22 @@ public class KafkaConsumerSampler extends AbstractTestElement
         return kafkaConsumerClientVariableName;
     }
 
+    public String getCommitType() {
+        return commitType;
+    }
+
+    public void setCommitType(String commitType) {
+        this.commitType = commitType;
+    }
+
+    public boolean isAutoCommit() {
+        return autoCommit;
+    }
+
+    public void setAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
+    }
+
     public void setKafkaConsumerClientVariableName(String kafkaConsumerClientVariableName) {
         this.kafkaConsumerClientVariableName = kafkaConsumerClientVariableName;
     }
@@ -128,44 +143,3 @@ public class KafkaConsumerSampler extends AbstractTestElement
         return (KafkaConsumer<String, Object>) JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName());
     }
 }
-
-//        import org.apache.kafka.clients.consumer.*;
-//        import java.util.Collections;
-//        import java.util.Map;
-//
-//        public class SingleMessageConsumer {
-//            public static void main(String[] args) {
-//                String topicName = "my-topic";
-//                String groupName = "my-group";
-//
-//                // create consumer configs
-//                Properties props = new Properties();
-//                props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-//                props.put(ConsumerConfig.GROUP_ID_CONFIG, groupName);
-//                props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-//                props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-//
-//                // create consumer
-//                KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-//
-//                // subscribe to topic
-//                consumer.subscribe(Collections.singletonList(topicName));
-//
-//                // poll for new data
-//                ConsumerRecords<String, String> records = consumer.poll(100);
-//                for (ConsumerRecord<String, String> record : records) {
-//                    System.out.printf("offset = %d, key = %s, value = %s\n", record.offset(), record.key(), record.value());
-//
-//                    // commit offset of the message
-//                    Map<TopicPartition, OffsetAndMetadata> offset = Collections.singletonMap(
-//                            new TopicPartition(record.topic(), record.partition()),
-//                            new OffsetAndMetadata(record.offset() + 1)
-//                    );
-//                    consumer.commitSync(offset);
-//                    break; // exit loop after reading one message
-//                }
-//
-//                // close consumer
-//                consumer.close();
-//            }
-//        }

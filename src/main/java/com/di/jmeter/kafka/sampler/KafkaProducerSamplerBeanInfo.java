@@ -21,8 +21,8 @@ public class KafkaProducerSamplerBeanInfo extends BeanInfoSupport {
 		PropertyDescriptor kafkaProducerClientVariableNamePropDesc =  property("kafkaProducerClientVariableName");
 		kafkaProducerClientVariableNamePropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
 		kafkaProducerClientVariableNamePropDesc.setValue(DEFAULT, "KafkaProducerClient");
-		kafkaProducerClientVariableNamePropDesc.setDisplayName("Variable Name of Kafka Producer Client declared in KafkaProducerConfig");
-		kafkaProducerClientVariableNamePropDesc.setShortDescription("Variable Name of Kafka Producer Client");
+		kafkaProducerClientVariableNamePropDesc.setDisplayName("Variable Name of Producer Client declared in Config element");
+		kafkaProducerClientVariableNamePropDesc.setShortDescription("Variable name declared in Kafka Producer client config");
 
 		PropertyDescriptor propDesc = property("kafkaTopic");
 		propDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
