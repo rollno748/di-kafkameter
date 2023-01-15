@@ -1,5 +1,6 @@
 package com.di.jmeter.kafka.sampler;
 
+import com.google.common.base.Strings;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.engine.util.ConfigMergabilityIndicator;
 import org.apache.jmeter.gui.Searchable;
@@ -26,11 +27,14 @@ import java.util.Map;
 public class KafkaConsumerSampler extends AbstractTestElement
         implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerSampler.class);
-    private KafkaConsumer<String, Object> kafkaConsumer;
+
     private String kafkaConsumerClientVariableName;
+    private String pollTimeout;
     private String commitType;
     private boolean autoCommit;
-    private final long READ_TIMEOUT = 100;
+    private final long DEFAULT_TIMEOUT = 100;
+
+    private KafkaConsumer<String, Object> kafkaConsumer;
 
     @Override
     public SampleResult sample(Entry entry) {
@@ -46,7 +50,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
             result.sampleStart();
             this.readMessage(result);
         }catch (KafkaException e){
-            LOGGER.info("Kafka producer config not initialized properly.. Check the config element");
+            LOGGER.info("Kafka Consumer config not initialized properly.. Check the config element");
             handleException(result, e);
         }finally {
             result.sampleEnd();
@@ -55,14 +59,15 @@ public class KafkaConsumerSampler extends AbstractTestElement
     }
 
     private void readMessage(SampleResult result) {
-        if (this.kafkaConsumer == null && getKafkaConsumerClient() != null) {
-            this.kafkaConsumer = getKafkaConsumerClient();
+        this.pollTimeout = (Strings.isNullOrEmpty(pollTimeout)) ?  String.valueOf(DEFAULT_TIMEOUT) : pollTimeout;
+        if (this.kafkaConsumer == null && getKafkaConsumer() != null) {
+            this.kafkaConsumer = getKafkaConsumer();
         }else{
-            throw new RuntimeException("Kafka Producer Client not found. Check Variable Name in KafkaProducerSampler.");
+            throw new RuntimeException("Kafka Consumer Client not found. Check Variable Name in KafkaConsumerSampler.");
         }
 
         // poll for new data
-        ConsumerRecords<String, Object> records = kafkaConsumer.poll(Duration.ofMillis(READ_TIMEOUT)); // This will poll multiple messages to records
+        ConsumerRecords<String, Object> records = kafkaConsumer.poll(Duration.ofMillis(Long.parseLong(getPollTimeout()))); // This will poll multiple messages to records
 
         for (ConsumerRecord<String, Object> record : records) {
             LOGGER.debug(String.format("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value()));
@@ -71,7 +76,11 @@ public class KafkaConsumerSampler extends AbstractTestElement
                     new TopicPartition(record.topic(), record.partition()),
                     new OffsetAndMetadata(record.offset() + 1)
             );
-            kafkaConsumer.commitSync(offset); //Commit the offset after reading single message
+            if(getCommitType().equalsIgnoreCase("sync")){
+                kafkaConsumer.commitSync(offset); //Commit the offset after reading single message
+            }else{
+                kafkaConsumer.commitAsync((OffsetCommitCallback) offset);//Commit the offset after reading single message
+            }
             result.setResponseData(getKafkaMessage(), StandardCharsets.UTF_8.name());
             result.setResponseOK();
             break; // Exit loop after reading single message
@@ -109,16 +118,21 @@ public class KafkaConsumerSampler extends AbstractTestElement
     }
 
     //Getters and setters
-    public KafkaConsumer<String, Object> getKafkaConsumer() {
-        return kafkaConsumer;
-    }
-
-    public void setKafkaConsumer(KafkaConsumer<String, Object> kafkaConsumer) {
-        this.kafkaConsumer = kafkaConsumer;
-    }
 
     public String getKafkaConsumerClientVariableName() {
         return kafkaConsumerClientVariableName;
+    }
+
+    public void setKafkaConsumerClientVariableName(String kafkaConsumerClientVariableName) {
+        this.kafkaConsumerClientVariableName = kafkaConsumerClientVariableName;
+    }
+
+    public String getPollTimeout() {
+        return (Strings.isNullOrEmpty(pollTimeout)) ? pollTimeout : String.valueOf(DEFAULT_TIMEOUT);
+    }
+
+    public void setPollTimeout(String pollTimeout) {
+        this.pollTimeout = pollTimeout;
     }
 
     public String getCommitType() {
@@ -137,10 +151,8 @@ public class KafkaConsumerSampler extends AbstractTestElement
         this.autoCommit = autoCommit;
     }
 
-    public void setKafkaConsumerClientVariableName(String kafkaConsumerClientVariableName) {
-        this.kafkaConsumerClientVariableName = kafkaConsumerClientVariableName;
-    }
-    private KafkaConsumer<String, Object> getKafkaConsumerClient() {
+    public KafkaConsumer<String, Object> getKafkaConsumer() {
         return (KafkaConsumer<String, Object>) JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName());
     }
+
 }

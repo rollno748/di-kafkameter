@@ -108,9 +108,11 @@ public class KafkaProducerConfig extends ConfigTestElement
 
 	@Override
 	public void testEnded() {
-		kafkaProducer.flush();
-		kafkaProducer.close();
-		LOGGER.info("Kafka Producer client connection terminated");
+		if(kafkaProducer != null){
+			kafkaProducer.flush();
+			kafkaProducer.close();
+			LOGGER.info("Kafka Producer client connection terminated");
+		}
 	}
 
 	@Override

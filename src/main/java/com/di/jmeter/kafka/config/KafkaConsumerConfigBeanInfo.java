@@ -68,13 +68,13 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
 
         connectionConfigpropDesc =  property("deSerializerKey");
         connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-        connectionConfigpropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.Deserializer");
+        connectionConfigpropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
         connectionConfigpropDesc.setDisplayName("Deserializer Key");
         connectionConfigpropDesc.setShortDescription("Deserializer class for key");
 
         connectionConfigpropDesc =  property("deSerializerValue");
         connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-        connectionConfigpropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.Deserializer");
+        connectionConfigpropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
         connectionConfigpropDesc.setDisplayName("Deserializer Value");
         connectionConfigpropDesc.setShortDescription("Deserializer class for value");
 

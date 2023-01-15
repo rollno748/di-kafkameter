@@ -116,15 +116,19 @@ public class KafkaConsumerConfig extends ConfigTestElement
     public KafkaConsumer<String, Object> getKafkaConsumer() {
         return kafkaConsumer;
     }
+
     public String getKafkaConsumerClientVariableName() {
         return kafkaConsumerClientVariableName;
     }
+
     public void setKafkaConsumerClientVariableName(String kafkaConsumerClientVariableName) {
         this.kafkaConsumerClientVariableName = kafkaConsumerClientVariableName;
     }
+
     public String getKafkaBrokers() {
         return kafkaBrokers;
     }
+
     public void setKafkaBrokers(String kafkaBrokers) {
         this.kafkaBrokers = kafkaBrokers;
     }
@@ -140,27 +144,35 @@ public class KafkaConsumerConfig extends ConfigTestElement
     public String getKafkaSslKeystore() {
         return kafkaSslKeystore;
     }
+
     public void setKafkaSslKeystore(String kafkaSslKeystore) {
         this.kafkaSslKeystore = kafkaSslKeystore;
     }
+
     public String getKafkaSslKeystorePassword() {
         return kafkaSslKeystorePassword;
     }
+
     public void setKafkaSslKeystorePassword(String kafkaSslKeystorePassword) {
         this.kafkaSslKeystorePassword = kafkaSslKeystorePassword;
     }
+
     public String getKafkaSslTruststore() {
         return kafkaSslTruststore;
     }
+
     public void setKafkaSslTruststore(String kafkaSslTruststore) {
         this.kafkaSslTruststore = kafkaSslTruststore;
     }
+
     public String getKafkaSslTruststorePassword() {
         return kafkaSslTruststorePassword;
     }
+
     public void setKafkaSslTruststorePassword(String kafkaSslTruststorePassword) {
         this.kafkaSslTruststorePassword = kafkaSslTruststorePassword;
     }
+
     public String getKafkaSslPrivateKeyPass() {
         return kafkaSslPrivateKeyPass;
     }
@@ -168,24 +180,31 @@ public class KafkaConsumerConfig extends ConfigTestElement
     public void setKafkaSslPrivateKeyPass(String kafkaSslPrivateKeyPass) {
         this.kafkaSslPrivateKeyPass = kafkaSslPrivateKeyPass;
     }
+
     public void setExtraConfigs(List<VariableSettings> extraConfigs) {
         this.extraConfigs = extraConfigs;
     }
+
     public List<VariableSettings> getExtraConfigs() {
         return this.extraConfigs;
     }
+
     public String getGroupId() {
         return groupId;
     }
+
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
+
     public String getTopic() {
         return topic;
     }
+
     public void setTopic(String topic) {
         this.topic = topic;
     }
+
     public String getDeSerializerKey() {
         return deSerializerKey;
     }
