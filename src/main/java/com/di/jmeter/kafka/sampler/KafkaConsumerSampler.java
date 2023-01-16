@@ -81,6 +81,10 @@ public class KafkaConsumerSampler extends AbstractTestElement
             }else{
                 kafkaConsumer.commitAsync((OffsetCommitCallback) offset);//Commit the offset after reading single message
             }
+
+            if(isAutoCommit()){
+
+            }
             result.setResponseData(getKafkaMessage(), StandardCharsets.UTF_8.name());
             result.setResponseOK();
             break; // Exit loop after reading single message
@@ -156,3 +160,5 @@ public class KafkaConsumerSampler extends AbstractTestElement
     }
 
 }
+
+//https://stackoverflow.com/questions/46546489/how-does-kafka-consumer-auto-commit-work
