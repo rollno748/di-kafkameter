@@ -98,7 +98,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
 
         if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
             LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
-            LOGGER.info(String.format("Setting up Kafka %s properties"), getSecurityType());
+            LOGGER.info(String.format("Setting up Kafka %s properties", getSecurityType()));
             props.put("ssl.truststore.location", getKafkaSslTruststore());
             props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
             props.put("ssl.keystore.location", getKafkaSslKeystore());
@@ -115,7 +115,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
 
     @Override
     public void testEnded() {
-//        kafkaConsumer.close();
+        kafkaConsumer.close();
         LOGGER.info("Kafka consumer client connection terminated");
     }
 

@@ -53,15 +53,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
             result.setRequestHeaders(String.format("TimeStamp: %s\n", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))));
 
             result.sampleStart();
-            ConsumerRecord<String, Object> fetchRecord = getConsumerRecord();
-            if(!(fetchRecord == null)){
-                result.setResponseHeaders(String.format("Topic: %s\nPartition: %s\nOffset: %s\nKey: %s\nTimestamp: %s\nHeaders: %s\n", fetchRecord.topic(), fetchRecord.partition(), fetchRecord.offset(), fetchRecord.key(), fetchRecord.timestamp(), fetchRecord.headers()));
-                result.setResponseData(fetchRecord.value().toString(), StandardCharsets.UTF_8.name());
-                result.setResponseOK();
-            }else{
-                result.setResponseData("No records retrieved", StandardCharsets.UTF_8.name());
-                result.setResponseCode("401");
-            }
+            this.processRecordsToResults(getConsumerRecords(), result);
 
         }catch (KafkaException e){
             LOGGER.info("Kafka Consumer config not initialized properly.. Check the config element");
@@ -72,19 +64,22 @@ public class KafkaConsumerSampler extends AbstractTestElement
         return result;
     }
 
-    private ConsumerRecord<String, Object> getConsumerRecord() {
-        ConsumerRecord<String, Object> fetchedRecord = null;
+    private ConsumerRecords<String, Object> getConsumerRecords() {
+        ConsumerRecords<String, Object> records;
         this.pollTimeout = (Strings.isNullOrEmpty(pollTimeout)) ?  String.valueOf(DEFAULT_TIMEOUT) : pollTimeout;
 
-        // poll for new data
-        ConsumerRecords<String, Object> records = kafkaConsumer.poll(Duration.ofMillis(Long.parseLong(getPollTimeout()))); // This will poll multiple messages to records
-        if(!records.isEmpty()){
-            fetchedRecord = records.iterator().next();
-            LOGGER.debug(String.format("offset = %d, key = %s, value = %s%n", fetchedRecord.offset(), fetchedRecord.key(), fetchedRecord.value()));
+        // This will poll Single/multiple messages of records as per the config
+        do{
+            records = kafkaConsumer.poll(Duration.ofMillis(Long.parseLong(getPollTimeout())));
+        }while(records.isEmpty());
+
+        for(ConsumerRecord<String, Object> record : records){
+            record = records.iterator().next();
+            LOGGER.debug(String.format("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value()));
             // commit offset of the message
             Map<TopicPartition, OffsetAndMetadata> offset = Collections.singletonMap(
-                    new TopicPartition(fetchedRecord.topic(), fetchedRecord.partition()),
-                    new OffsetAndMetadata(fetchedRecord.offset() + 1)
+                    new TopicPartition(record.topic(), record.partition()),
+                    new OffsetAndMetadata(record.offset() + 1)
             );
 
             if(getCommitType().equalsIgnoreCase("sync")){
@@ -93,7 +88,24 @@ public class KafkaConsumerSampler extends AbstractTestElement
                 kafkaConsumer.commitAsync((OffsetCommitCallback) offset);//Commit the offset after reading single message
             }
         }
-        return fetchedRecord;
+        return records;
+    }
+
+    private void processRecordsToResults(ConsumerRecords<String, Object> consumerRecords, SampleResult result) {
+        if(!consumerRecords.isEmpty()){
+            StringBuilder headers = new StringBuilder();
+            StringBuilder response = new StringBuilder();
+            for(ConsumerRecord<String, Object> record : consumerRecords){
+                 headers.append(String.format("Timestamp: %s\nTopic: %s\nPartition: %s\nOffset: %s\nKey: %s\nHeaders: %s\n\n", record.timestamp(), record.topic(), record.partition(), record.offset(), record.key(), record.headers()));
+                 response.append(record.value().toString()+"\n\n");
+            }
+            result.setResponseHeaders(String.valueOf(headers));
+            result.setResponseData(String.valueOf(response), StandardCharsets.UTF_8.name());
+            result.setResponseOK();
+        }else{
+            result.setResponseData("No records retrieved", StandardCharsets.UTF_8.name());
+            result.setResponseCode("401");
+        }
     }
 
     private void validateClient() {
@@ -156,10 +168,9 @@ public class KafkaConsumerSampler extends AbstractTestElement
         this.commitType = commitType;
     }
 
+    @SuppressWarnings("unchecked")
     public KafkaConsumer<String, Object> getKafkaConsumer() {
         return (KafkaConsumer<String, Object>) JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName());
     }
 
 }
-
-//https://stackoverflow.com/questions/46546489/how-does-kafka-consumer-auto-commit-work

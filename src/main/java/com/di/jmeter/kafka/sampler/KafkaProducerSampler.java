@@ -117,7 +117,6 @@ public class KafkaProducerSampler extends AbstractTestElement
 			final int partitionNumber = Integer.parseInt(getPartitionString());
 			producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), partitionNumber, getKafkaMessageKey(), getKafkaMessage());
 		}
-
 		LOGGER.debug("Additional Headers Size::: "+ getMessageHeaders().size());
 
 		if (getMessageHeaders().size() >= 1) {

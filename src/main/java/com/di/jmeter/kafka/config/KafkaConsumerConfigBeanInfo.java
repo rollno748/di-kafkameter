@@ -103,25 +103,25 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         securityDescriptor =  property("kafkaSslTruststore");
         securityDescriptor.setValue(NOT_UNDEFINED, Boolean.TRUE);
         securityDescriptor.setValue(DEFAULT, "");
-        securityDescriptor.setDisplayName("KafkaSSLTruststore Location");
+        securityDescriptor.setDisplayName("Truststore Location");
         securityDescriptor.setShortDescription("Kafka SSL Truststore file location");
 
         securityDescriptor =  property("kafkaSslTruststorePassword", TypeEditor.PasswordEditor);
         securityDescriptor.setValue(NOT_UNDEFINED, Boolean.TRUE);
         securityDescriptor.setValue(DEFAULT, "Chang3M3");
-        securityDescriptor.setDisplayName("KafkaSSLTruststore Password");
+        securityDescriptor.setDisplayName("Truststore Password");
         securityDescriptor.setShortDescription("Kafka SSL Truststore Password");
 
         securityDescriptor =  property("kafkaSslKeystore");
         securityDescriptor.setValue(NOT_UNDEFINED, Boolean.TRUE);
         securityDescriptor.setValue(DEFAULT, "");
-        securityDescriptor.setDisplayName("KafkaSSLKeystore Location");
+        securityDescriptor.setDisplayName("Keystore Location");
         securityDescriptor.setShortDescription("Kafka SSL Keystore file location");
 
         securityDescriptor =  property("kafkaSslKeystorePassword", TypeEditor.PasswordEditor);
         securityDescriptor.setValue(NOT_UNDEFINED, Boolean.TRUE);
         securityDescriptor.setValue(DEFAULT, "Chang3M3");
-        securityDescriptor.setDisplayName("KafkaSSLKeystore Password");
+        securityDescriptor.setDisplayName("Keystore Password");
         securityDescriptor.setShortDescription("Kafka SSL Keystore Password");
 
         securityDescriptor =  property("kafkaSslPrivateKeyPass", TypeEditor.PasswordEditor);
