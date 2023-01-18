@@ -61,36 +61,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 		} else {
 			synchronized (this) {
 				try {
-					Properties props = new Properties();
-
-					props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
-					props.put(ProducerConfig.BATCH_SIZE_CONFIG, getBatchSize());
-					props.put(ProducerConfig.CLIENT_ID_CONFIG, getClientId());
-					props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, getSerializerKey());
-					props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, getSerializerValue());
-					props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
-
-					LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
-					if (getExtraConfigs().size() >= 1) {
-						LOGGER.info("Setting up Additional properties");
-						for (VariableSettings entry : getExtraConfigs()){
-							props.put(entry.getConfigKey(), entry.getConfigValue());
-							LOGGER.debug(String.format("Adding property : %s", entry.getConfigKey()));
-						}
-					}
-
-					if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
-						LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
-						LOGGER.info(String.format("Setting up Kafka %s properties"), getSecurityType());
-						props.put("ssl.truststore.location", getKafkaSslTruststore());
-						props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
-						props.put("ssl.keystore.location", getKafkaSslKeystore());
-						props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
-						props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
-					}
-
-					kafkaProducer = new KafkaProducer<String, Object>(props);
-
+					kafkaProducer = new KafkaProducer<String, Object>(getProps());
 					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
 					LOGGER.info("Kafka Producer client successfully Initialized");
 				} catch (Exception e) {
@@ -99,6 +70,38 @@ public class KafkaProducerConfig extends ConfigTestElement
 				}
 			}
 		}
+	}
+
+	private Properties getProps() {
+		Properties props = new Properties();
+
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
+		props.put(ProducerConfig.BATCH_SIZE_CONFIG, getBatchSize());
+		props.put(ProducerConfig.CLIENT_ID_CONFIG, getClientId());
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, getSerializerKey());
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, getSerializerValue());
+		props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
+
+		LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
+		if (getExtraConfigs().size() >= 1) {
+			LOGGER.info("Setting up Additional properties");
+			for (VariableSettings entry : getExtraConfigs()){
+				props.put(entry.getConfigKey(), entry.getConfigValue());
+				LOGGER.debug(String.format("Adding property : %s", entry.getConfigKey()));
+			}
+		}
+
+		if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
+			LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
+			LOGGER.info(String.format("Setting up Kafka %s properties"), getSecurityType());
+			props.put("ssl.truststore.location", getKafkaSslTruststore());
+			props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
+			props.put("ssl.keystore.location", getKafkaSslKeystore());
+			props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
+			props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
+		}
+
+		return props;
 	}
 
 	@Override

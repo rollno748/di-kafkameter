@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import com.di.jmeter.kafka.utils.VariableSettings;
 import org.apache.jmeter.config.ConfigTestElement;
@@ -21,7 +22,7 @@ import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ import com.google.common.base.Strings;
 public class KafkaProducerSampler extends AbstractTestElement
 		implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(KafkaProducerSampler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerSampler.class);
 	private static final long serialVersionUID = -1299097780294947281L;
 
 	private static final Set<String> APPLIABLE_CONFIG_CLASSES = new HashSet<>(
@@ -51,35 +52,24 @@ public class KafkaProducerSampler extends AbstractTestElement
 	public SampleResult sample(Entry e) {
 
 		SampleResult result = new SampleResult();
-		result.setSampleLabel(getName());
-		result.setSamplerData(request());
-		result.setDataType(SampleResult.TEXT);
-		result.setContentType("text/plain");
-		result.setDataEncoding(StandardCharsets.UTF_8.name());
-
 		try {
-
-			if (Strings.isNullOrEmpty(getPartitionString())) {
-				producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), getKafkaMessageKey(), getKafkaMessage());
-			} else {
-				final int partitionNumber = Integer.parseInt(getPartitionString());
-				producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), partitionNumber, getKafkaMessageKey(), getKafkaMessage());
+			if(this.kafkaProducer == null){
+				this.validateClient();
 			}
+			ProducerRecord<String, Object> producerRecord = getProducerRecord();
 
-			LOGGER.debug("Additional Headers Size::: "+ getMessageHeaders().size());
-			if (getMessageHeaders().size() >= 1) {
-				StringBuilder headers = new StringBuilder(); 
-				LOGGER.debug("Setting up additional header to message");
-				for (VariableSettings entry : getMessageHeaders()){
-					producerRecord.headers().add(new RecordHeader(entry.getHeaderKey(), entry.getHeaderValue().getBytes()));
-					headers.append(entry.getHeaderKey() + ": " +entry.getHeaderValue() + "\n");
-					LOGGER.debug(String.format("Adding Headers : %s", entry.getHeaderKey()));
-				}
-				result.setRequestHeaders(headers.toString());
-			}
+			result.setSampleLabel(getName());
+			result.setDataType(SampleResult.TEXT);
+			result.setContentType("text/plain");
+			result.setDataEncoding(StandardCharsets.UTF_8.name());
+			result.setSamplerData(getKafkaMessage());
+			result.setRequestHeaders(producerRecord.headers().toString());
+
 			result.sampleStart();
-			produce(result);
-
+			Future<RecordMetadata> metaData = kafkaProducer.send(producerRecord);
+			result.setResponseData("Success", StandardCharsets.UTF_8.name());
+			result.setResponseHeaders(String.format("Topic: %s\nOffset: %s \nPartition: %s\nTimestamp: %s", metaData.get().topic(), metaData.get().offset(), metaData.get().partition(), metaData.get().timestamp()));
+			result.setResponseOK();
 		} catch (Exception ex) {
 			LOGGER.info("Exception occurred while sending message to kafka");
 			result = handleException(result, ex);
@@ -112,36 +102,40 @@ public class KafkaProducerSampler extends AbstractTestElement
 		return APPLIABLE_CONFIG_CLASSES.contains(guiClass);
 	}
 
-	private void produce(SampleResult result) {
-
+	private void validateClient() {
 		if (this.kafkaProducer == null && getKafkaProducerClient() != null) {
 			this.kafkaProducer = getKafkaProducerClient();
 		}else{
 			throw new RuntimeException("Kafka Producer Client not found. Check Variable Name in KafkaProducerSampler.");
 		}
+	}
 
-		try {
-			kafkaProducer.send(producerRecord);
-			result.setResponseData(getKafkaMessage(), StandardCharsets.UTF_8.name());
-			result.setResponseOK();
-		} catch (KafkaException e) {
-			LOGGER.info("Kafka producer config not initialized properly.. Check the config element");
-			handleException(result, e);
+	private ProducerRecord<String, Object> getProducerRecord() {
+		if (Strings.isNullOrEmpty(getPartitionString())) {
+			producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), getKafkaMessageKey(), getKafkaMessage());
+		} else {
+			final int partitionNumber = Integer.parseInt(getPartitionString());
+			producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), partitionNumber, getKafkaMessageKey(), getKafkaMessage());
 		}
+
+		LOGGER.debug("Additional Headers Size::: "+ getMessageHeaders().size());
+
+		if (getMessageHeaders().size() >= 1) {
+			LOGGER.debug("Setting up additional header to message");
+			for (VariableSettings entry : getMessageHeaders()){
+				producerRecord.headers().add(new RecordHeader(entry.getHeaderKey(), entry.getHeaderValue().getBytes()));
+				LOGGER.debug(String.format("Adding Headers : %s", entry.getHeaderKey()));
+			}
+		}
+		return producerRecord;
 	}
 
 	private SampleResult handleException(SampleResult result, Exception ex) {
-		result.setResponseMessage("Error sending message to kafka topic");
+		result.setResponseMessage("Message: Error sending message to kafka topic");
 		result.setResponseCode("500");
 		result.setResponseData(String.format("Error sending message to kafka topic : %s", ex.toString()).getBytes());
 		result.setSuccessful(false);
 		return result;
-	}
-
-	private String request() {
-		StringBuilder requestBody = new StringBuilder();
-		requestBody.append("Message: \n").append(getKafkaMessage()).append("\n");
-		return requestBody.toString();
 	}
 
 	//Getters Setters

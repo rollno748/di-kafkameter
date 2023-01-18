@@ -36,7 +36,7 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
 
         createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaConsumerClientVariableName"});
         //Connection configs
-        createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "groupId", "topic", "deSerializerKey", "deSerializerValue"});
+        createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "groupId", "topic", "deSerializerKey", "deSerializerValue", "numberOfMsgToPoll", "autoCommit"});
         //Security config
         createPropertyGroup("Security", new String[] {SECURITYTYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
         //Additional c:qqonfigs
@@ -48,35 +48,47 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         consumerClientVariableNamePropDesc.setDisplayName("Variable Name");
         consumerClientVariableNamePropDesc.setShortDescription("Variable name to use in Kafka Consumer Sampler");
 
-        PropertyDescriptor connectionConfigpropDesc =  property("kafkaBrokers");
-        connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-        connectionConfigpropDesc.setValue(DEFAULT, "localhost1:9091,localhost2:9091");
-        connectionConfigpropDesc.setDisplayName("Kafka Brokers");
-        connectionConfigpropDesc.setShortDescription("List of Kafka Brokers - comma separated");
+        PropertyDescriptor connectionConfigPropDesc =  property("kafkaBrokers");
+        connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+        connectionConfigPropDesc.setValue(DEFAULT, "localhost1:9091,localhost2:9091");
+        connectionConfigPropDesc.setDisplayName("Kafka Brokers");
+        connectionConfigPropDesc.setShortDescription("List of Kafka Brokers - comma separated");
 
-        connectionConfigpropDesc =  property("groupId");
-        connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-        connectionConfigpropDesc.setValue(DEFAULT, "consumer-group-1");
-        connectionConfigpropDesc.setDisplayName("Group ID");
-        connectionConfigpropDesc.setShortDescription("Group ID - Unique Id to identify the consumer group");
+        connectionConfigPropDesc =  property("groupId");
+        connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+        connectionConfigPropDesc.setValue(DEFAULT, "consumer-group-1");
+        connectionConfigPropDesc.setDisplayName("Group ID");
+        connectionConfigPropDesc.setShortDescription("Group ID - Unique Id to identify the consumer group");
 
-        connectionConfigpropDesc =  property("topic");
-        connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-        connectionConfigpropDesc.setValue(DEFAULT, "kafka_topic");
-        connectionConfigpropDesc.setDisplayName("Topic");
-        connectionConfigpropDesc.setShortDescription("Kafka Topic for the Consumer to subscribe");
+        connectionConfigPropDesc =  property("topic");
+        connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+        connectionConfigPropDesc.setValue(DEFAULT, "kafka_topic");
+        connectionConfigPropDesc.setDisplayName("Topic");
+        connectionConfigPropDesc.setShortDescription("Kafka Topic for the Consumer to subscribe");
 
-        connectionConfigpropDesc =  property("deSerializerKey");
-        connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-        connectionConfigpropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
-        connectionConfigpropDesc.setDisplayName("Deserializer Key");
-        connectionConfigpropDesc.setShortDescription("Deserializer class for key");
+        connectionConfigPropDesc =  property("deSerializerKey");
+        connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+        connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
+        connectionConfigPropDesc.setDisplayName("Deserializer Key");
+        connectionConfigPropDesc.setShortDescription("Deserializer class for key");
 
-        connectionConfigpropDesc =  property("deSerializerValue");
-        connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-        connectionConfigpropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
-        connectionConfigpropDesc.setDisplayName("Deserializer Value");
-        connectionConfigpropDesc.setShortDescription("Deserializer class for value");
+        connectionConfigPropDesc =  property("deSerializerValue");
+        connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+        connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
+        connectionConfigPropDesc.setDisplayName("Deserializer Value");
+        connectionConfigPropDesc.setShortDescription("Deserializer class for value");
+
+        connectionConfigPropDesc = property("numberOfMsgToPoll");
+        connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+        connectionConfigPropDesc.setValue(DEFAULT, "1");
+        connectionConfigPropDesc.setDisplayName("No. of Messages to Poll");
+        connectionConfigPropDesc.setShortDescription("Number of messages to poll from the topic");
+
+        connectionConfigPropDesc = property("autoCommit");
+        connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+        connectionConfigPropDesc.setValue(DEFAULT, Boolean.TRUE);
+        connectionConfigPropDesc.setDisplayName("Auto Commit");
+        connectionConfigPropDesc.setShortDescription("Commit offsets returned on the last poll() for all the subscribed list of topics and partitions");
 
         PropertyDescriptor securityDescriptor =  property(SECURITYTYPE, TypeEditor.ComboStringEditor);
         securityDescriptor.setValue(RESOURCE_BUNDLE, getBeanDescriptor().getValue(RESOURCE_BUNDLE));
@@ -143,9 +155,9 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         }
         return -1;
     }
-//    public static String[] getSecurityTypeTags() {
-//        String[] copy = new String[SECURITYTYPE_TAGS.length];
-//        System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
-//        return copy;
-//    }
+    public static String[] getSecurityTypeTags() {
+        String[] copy = new String[SECURITYTYPE_TAGS.length];
+        System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
+        return copy;
+    }
 }

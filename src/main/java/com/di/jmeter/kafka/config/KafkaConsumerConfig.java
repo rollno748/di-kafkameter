@@ -28,6 +28,8 @@ public class KafkaConsumerConfig extends ConfigTestElement
     private String kafkaBrokers;
     private String groupId;
     private String topic;
+    private String numberOfMsgToPoll;
+    private boolean autoCommit;
     private String deSerializerKey;
     private String deSerializerValue;
     private String securityType;
@@ -57,34 +59,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
         } else {
             synchronized (this) {
                 try {
-                    Properties props = new Properties();
-
-                    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
-                    props.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());//groupId
-                    props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, getDeSerializerKey());
-                    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, getDeSerializerValue());
-                    props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
-
-                    LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
-                    if (getExtraConfigs().size() >= 1) {
-                        LOGGER.info("Setting up Additional properties");
-                        for (VariableSettings entry : getExtraConfigs()){
-                            props.put(entry.getConfigKey(), entry.getConfigValue());
-                            LOGGER.debug(String.format("Adding property : %s", entry.getConfigKey()));
-                        }
-                    }
-
-                    if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
-                        LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
-                        LOGGER.info(String.format("Setting up Kafka %s properties"), getSecurityType());
-                        props.put("ssl.truststore.location", getKafkaSslTruststore());
-                        props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
-                        props.put("ssl.keystore.location", getKafkaSslKeystore());
-                        props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
-                        props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
-                    }
-
-                    kafkaConsumer = new KafkaConsumer<>(props);
+                    kafkaConsumer = new KafkaConsumer<>(getProps());
                     kafkaConsumer.subscribe(Collections.singletonList(getTopic()));
                     variables.putObject(kafkaConsumerClientVariableName, kafkaConsumer);
                     LOGGER.info("Kafka consumer client successfully Initialized");
@@ -96,6 +71,43 @@ public class KafkaConsumerConfig extends ConfigTestElement
         }
     }
 
+    private Properties getProps() {
+        Properties props = new Properties();
+
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());//groupId
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, getDeSerializerKey());
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, getDeSerializerValue());
+        props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, isAutoCommit());
+
+        LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
+        if (getExtraConfigs().size() >= 1) {
+            LOGGER.info("Setting up Additional properties");
+            for (VariableSettings entry : getExtraConfigs()){
+                props.put(entry.getConfigKey(), entry.getConfigValue());
+                LOGGER.debug(String.format("Adding property : %s", entry.getConfigKey()));
+            }
+        }
+
+        if (Integer.parseInt(getNumberOfMsgToPoll()) > 1) {
+            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, Integer.parseInt(getNumberOfMsgToPoll()));
+        }else{
+            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1);
+        }
+
+        if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
+            LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
+            LOGGER.info(String.format("Setting up Kafka %s properties"), getSecurityType());
+            props.put("ssl.truststore.location", getKafkaSslTruststore());
+            props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
+            props.put("ssl.keystore.location", getKafkaSslKeystore());
+            props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
+            props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
+        }
+        return props;
+    }
+
     @Override
     public void testStarted(String host) {
         testStarted();
@@ -103,7 +115,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
 
     @Override
     public void testEnded() {
-        kafkaConsumer.close();
+//        kafkaConsumer.close();
         LOGGER.info("Kafka consumer client connection terminated");
     }
 
@@ -203,6 +215,22 @@ public class KafkaConsumerConfig extends ConfigTestElement
 
     public void setTopic(String topic) {
         this.topic = topic;
+    }
+
+    public String getNumberOfMsgToPoll() {
+        return numberOfMsgToPoll;
+    }
+
+    public void setNumberOfMsgToPoll(String numberOfMsgToPoll) {
+        this.numberOfMsgToPoll = numberOfMsgToPoll;
+    }
+
+    public boolean isAutoCommit() {
+        return autoCommit;
+    }
+
+    public void setAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
     }
 
     public String getDeSerializerKey() {

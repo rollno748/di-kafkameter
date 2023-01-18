@@ -9,7 +9,7 @@ public class KafkaConsumerSamplerBeanInfo extends BeanInfoSupport {
     public KafkaConsumerSamplerBeanInfo() {
         super(KafkaConsumerSampler.class);
         createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaConsumerClientVariableName"});
-        createPropertyGroup("Consumer Settings", new String[] {"pollTimeout", "commitType", "autoCommit"});
+        createPropertyGroup("Consumer Settings", new String[] {"pollTimeout", "commitType"});
 
         PropertyDescriptor varPropDesc = property("kafkaConsumerClientVariableName");
         varPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
@@ -29,13 +29,5 @@ public class KafkaConsumerSamplerBeanInfo extends BeanInfoSupport {
         consumerSettingsPropDesc.setDisplayName("Commit Type");
         consumerSettingsPropDesc.setShortDescription("Commit type - Sync/Async");
 
-        consumerSettingsPropDesc = property("autoCommit");
-        consumerSettingsPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-        consumerSettingsPropDesc.setValue(DEFAULT, Boolean.TRUE);
-        consumerSettingsPropDesc.setDisplayName("Auto Commit");
-        consumerSettingsPropDesc.setShortDescription("Commit offsets returned on the last poll() for all the subscribed list of topics and partitions");
-
     }
-
-
 }
