@@ -61,7 +61,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 		} else {
 			synchronized (this) {
 				try {
-					kafkaProducer = new KafkaProducer<String, Object>(getProps());
+					kafkaProducer = new KafkaProducer<>(getProps());
 					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
 					LOGGER.info("Kafka Producer client successfully Initialized");
 				} catch (Exception e) {
@@ -93,7 +93,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 
 		if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
 			LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
-			LOGGER.info(String.format("Setting up Kafka %s properties"), getSecurityType());
+			LOGGER.info("Setting up Kafka {} properties", getSecurityType());
 			props.put("ssl.truststore.location", getKafkaSslTruststore());
 			props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
 			props.put("ssl.keystore.location", getKafkaSslKeystore());

@@ -37,9 +37,9 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaConsumerClientVariableName"});
         //Connection configs
         createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "groupId", "topic", "deSerializerKey", "deSerializerValue", "numberOfMsgToPoll", "autoCommit"});
-        //Security config
+        //Security configs
         createPropertyGroup("Security", new String[] {SECURITYTYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
-        //Additional c:qqonfigs
+        //Additional configs
         createPropertyGroup("Additional Configs", new String[] {"extraConfigs"});
 
         PropertyDescriptor consumerClientVariableNamePropDesc =  property("kafkaConsumerClientVariableName");

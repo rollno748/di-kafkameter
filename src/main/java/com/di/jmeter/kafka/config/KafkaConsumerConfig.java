@@ -90,11 +90,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
             }
         }
 
-        if (Integer.parseInt(getNumberOfMsgToPoll()) > 1) {
-            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, Integer.parseInt(getNumberOfMsgToPoll()));
-        }else{
-            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1);
-        }
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, Math.max(Integer.parseInt(getNumberOfMsgToPoll()), 1));
 
         if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
             LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());

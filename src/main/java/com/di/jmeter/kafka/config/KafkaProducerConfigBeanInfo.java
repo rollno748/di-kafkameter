@@ -49,35 +49,35 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		kafkaProducerClientVariableNamePropDesc.setDisplayName("Variable Name");
 		kafkaProducerClientVariableNamePropDesc.setShortDescription("Variable Name to use in KafkaProducerSampler");
 
-		PropertyDescriptor connectionConfigpropDesc =  property("kafkaBrokers");
-		connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		connectionConfigpropDesc.setValue(DEFAULT, "localhost1:9091,localhost2:9091");
-		connectionConfigpropDesc.setDisplayName("Kafka Brokers");
-		connectionConfigpropDesc.setShortDescription("List of Kafka Brokers - comma separated");
+		PropertyDescriptor connectionConfigPropDesc =  property("kafkaBrokers");
+		connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+		connectionConfigPropDesc.setValue(DEFAULT, "localhost1:9091,localhost2:9091");
+		connectionConfigPropDesc.setDisplayName("Kafka Brokers");
+		connectionConfigPropDesc.setShortDescription("List of Kafka Brokers - comma separated");
 
-		connectionConfigpropDesc =  property("batchSize");
-		connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		connectionConfigpropDesc.setValue(DEFAULT, "16384");
-		connectionConfigpropDesc.setDisplayName("Batch Size");
-		connectionConfigpropDesc.setShortDescription("Batch Size");
+		connectionConfigPropDesc =  property("batchSize");
+		connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+		connectionConfigPropDesc.setValue(DEFAULT, "16384");
+		connectionConfigPropDesc.setDisplayName("Batch Size");
+		connectionConfigPropDesc.setShortDescription("Batch Size");
 
-		connectionConfigpropDesc =  property("clientId");
-		connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		connectionConfigpropDesc.setValue(DEFAULT, "JMeter-Producer-1");
-		connectionConfigpropDesc.setDisplayName("Client ID");
-		connectionConfigpropDesc.setShortDescription("Client ID - Unique Id to connect to Broker");
+		connectionConfigPropDesc =  property("clientId");
+		connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+		connectionConfigPropDesc.setValue(DEFAULT, "JMeter-Producer-1");
+		connectionConfigPropDesc.setDisplayName("Client ID");
+		connectionConfigPropDesc.setShortDescription("Client ID - Unique Id to connect to Broker");
 
-		connectionConfigpropDesc =  property("serializerKey");
-		connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		connectionConfigpropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
-		connectionConfigpropDesc.setDisplayName("Serializer Key");
-		connectionConfigpropDesc.setShortDescription("Serializer Key");
+		connectionConfigPropDesc =  property("serializerKey");
+		connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+		connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
+		connectionConfigPropDesc.setDisplayName("Serializer Key");
+		connectionConfigPropDesc.setShortDescription("Serializer Key");
 
-		connectionConfigpropDesc =  property("serializerValue");
-		connectionConfigpropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		connectionConfigpropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
-		connectionConfigpropDesc.setDisplayName("Serializer Value");
-		connectionConfigpropDesc.setShortDescription("Serializer Value (must accept String input)");
+		connectionConfigPropDesc =  property("serializerValue");
+		connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+		connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
+		connectionConfigPropDesc.setDisplayName("Serializer Value");
+		connectionConfigPropDesc.setShortDescription("Serializer Value (must accept String input)");
 
 		PropertyDescriptor securityPropDesc =  property(SECURITYTYPE, TypeEditor.ComboStringEditor);
 		securityPropDesc.setValue(RESOURCE_BUNDLE, getBeanDescriptor().getValue(RESOURCE_BUNDLE));
@@ -145,9 +145,9 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		}
 		return -1;
 	}
-//	public static String[] getSecurityTypeTags() {
-//		String[] copy = new String[SECURITYTYPE_TAGS.length];
-//		System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
-//		return copy;
-//	}
+	public static String[] getSecurityTypeTags() {
+		String[] copy = new String[SECURITYTYPE_TAGS.length];
+		System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
+		return copy;
+	}
 }
