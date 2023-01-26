@@ -62,9 +62,8 @@ public class KafkaProducerSampler extends AbstractTestElement
 			result.setDataType(SampleResult.TEXT);
 			result.setContentType("text/plain");
 			result.setDataEncoding(StandardCharsets.UTF_8.name());
-			result.setSamplerData(getKafkaMessage());
+			result.setSamplerData(getKafkaMessageKey()+": "+getKafkaMessage());
 			result.setRequestHeaders(producerRecord.headers().toString());
-
 			result.sampleStart();
 			Future<RecordMetadata> metaData = kafkaProducer.send(producerRecord);
 			result.setResponseData("Success", StandardCharsets.UTF_8.name());

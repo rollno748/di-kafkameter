@@ -14,9 +14,7 @@ public class KafkaProducerSamplerBeanInfo extends BeanInfoSupport {
 		super(KafkaProducerSampler.class);
 
 		createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaProducerClientVariableName"});
-
 		createPropertyGroup("Message to Produce", new String[] { "kafkaTopic","partitionString","kafkaMessageKey","kafkaMessage","messageHeaders" });
-		//createPropertyGroup("Kafka Message Headers (Optional)", new String[] {"messageHeaders"});
 
 		PropertyDescriptor kafkaProducerClientVariableNamePropDesc =  property("kafkaProducerClientVariableName");
 		kafkaProducerClientVariableNamePropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
