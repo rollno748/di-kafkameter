@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This plugin is an extended version of Kafkameter with restructured UI and additional features which kafkameter missed
+This plugin is an extended version of Kafkameter with restructured UI and additional features.
 
 ## Required Components
 
@@ -27,9 +27,7 @@ This plugin is an extended version of Kafkameter with restructured UI and additi
 * Consumer Support Enhancement
 * Provided support for security (Including JAAS support)
 * Removed redundant libraries and built as non shaded jar.
-* Ability with the consumer to define the no of records to read per request 
-* Optimized code
-
+* Ability with the consumer to define the no of records to read per request
 
 ## Installation Instructions
 
@@ -57,10 +55,10 @@ Kudos to the [Instaclustr](https://www.instaclustr.com/) team to make it easier 
 
 ## References
 
- * Plugin Overview: https://github.com/BrightTag/kafkameter  
- * How to add headers to message: https://stackoverflow.com/questions/29025627/adding-custom-headers-in-kafka-message
- * TableEditor : https://www.programcreek.com/java-api-examples/?api=org.apache.jmeter.testbeans.gui.TableEditor
- * Producer Config property : https://kafka.apache.org/documentation/#producerconfigs
+* Kafka Docs: https://kafka.apache.org/documentation/
+* Plugin Overview: https://github.com/BrightTag/kafkameter
+* Adding headers to kafka message: https://stackoverflow.com/questions/29025627/adding-custom-headers-in-kafka-message
+* TableEditor : https://www.programcreek.com/java-api-examples/?api=org.apache.jmeter.testbeans.gui.TableEditor
 
 
 ## 💲 Support Me
@@ -69,4 +67,3 @@ Kudos to the [Instaclustr](https://www.instaclustr.com/) team to make it easier 
 Please rate a :star2: if you like it.
 
 Please open up a :beetle: - If you experienced something.
- 
