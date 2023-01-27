@@ -6,9 +6,8 @@ This plugin is an extended version of Kafkameter with restructured UI and additi
 
 ## Required Components
 
-1. DI-Jmeter or Apache Jmeter
-2. Kafka Configs (Broker lists, Topic(s), etc)
-
+1. Apache Jmeter
+2. Kafka connection configs
 
 ## Jar Dependencies Required
 
@@ -23,12 +22,26 @@ This plugin is an extended version of Kafkameter with restructured UI and additi
 * Jmeter version 5.x or above
 * Java 8 or above
 
+## What's New?
+
+* Consumer Support Enhancement
+* Provided support for security (Including JAAS support)
+* Removed redundant libraries and built as non shaded jar.
+* Ability with the consumer to define the no of records to read per request 
+* Optimized code
+
+
 ## Installation Instructions
 
-* Download the source code from the Gitlab.
+* Download the source code from the Github.
 * Just do a mvn clean install (M2 is required)
 * Jar will be generated under the target directory (di-kafkameter-1.1.jar).
-* Copy the Jar to \<Jmeter Installed Directory\>/lib/ext/ for DI Jmeter \<Jmeter Installed Directory\>/di/plugins
+* Copy the Jar to \<Jmeter Installed Directory\>/lib/ext/
+
+## Config Elements
+
+* Producer Config Element - [wiki](https://github.com/rollno748/di-kafkameter/wiki#producer-elements)
+* Consumer Config Element - [wiki](https://github.com/rollno748/di-kafkameter/wiki#consumer-elements)
 
 ## Config Properties for Config Element.
 
@@ -37,21 +50,16 @@ Please refer the Wiki for the list of properties - which can be used
 * Producer config properties - [wiki](https://github.com/rollno748/di-kafkameter/wiki#producer-properties)
 * Consumer config properties - [wiki](https://github.com/rollno748/di-kafkameter/wiki#consumer-properties)
 
-## Config Elements
-
-* Producer Config Element - [wiki](https://github.com/rollno748/di-kafkameter/wiki#producer-elements)
-* Consumer Config Element - [wiki](https://github.com/rollno748/di-kafkameter/wiki#consumer-elements)
-
 ## Credits
-A big thanks to the [Instaclustr](https://www.instaclustr.com/) for providing free tier. which really helped me to validate this on kafka.
-It's a great effort by the team to make it easy for the end user to spin the kafka cluster in no time.
+A big thanks to the [Instaclustr](https://www.instaclustr.com/) for providing free tier, which really helped to validate this plugin on kafka.
+
+Kudos to the [Instaclustr](https://www.instaclustr.com/) team to make it easier for the end user to spin up the cluster in no time.
 
 ## References
 
  * Plugin Overview: https://github.com/BrightTag/kafkameter  
  * How to add headers to message: https://stackoverflow.com/questions/29025627/adding-custom-headers-in-kafka-message
  * TableEditor : https://www.programcreek.com/java-api-examples/?api=org.apache.jmeter.testbeans.gui.TableEditor
- * Validation : Kafka tool (http://www.kafkatool.com/)
  * Producer Config property : https://kafka.apache.org/documentation/#producerconfigs
 
 
