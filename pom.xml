@@ -7,7 +7,6 @@
 	<groupId>com.di.jmeter.kafka</groupId>
 	<artifactId>di-kafkameter</artifactId>
 	<version>1.1</version>
-
 	<name>di-kafkameter</name>
 	<description>Kafka plugin for JMeter</description>
 
@@ -15,8 +14,9 @@
 		<jdk.version>1.8</jdk.version>
 		<jmeter-version>5.5</jmeter-version>
 		<kafka.client.version>3.3.1</kafka.client.version>
+		<slf4j-api-version>1.7.29</slf4j-api-version>
+		<guava-version>31.1-jre</guava-version>
 		<jmeter.lib.scope>provided</jmeter.lib.scope>
-
 	</properties>
 
 	<dependencies>
@@ -26,22 +26,23 @@
 			<version>${jmeter-version}</version>
 			<scope>${jmeter.lib.scope}</scope>
 		</dependency>
+		<!-- Kafka Dependencies -->
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka-clients</artifactId>
 			<version>${kafka.client.version}</version>
 		</dependency>
+		<!--Not required for bundle-->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.29</version>
-		</dependency><!--Not required for bundle-->
+			<version>${slf4j-api-version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>31.1-jre</version>
+			<version>${guava-version}</version>
 		</dependency>
-		<!-- Kafka Dependencies -->
 	</dependencies>
 	<build>
 		<resources>
@@ -52,7 +53,6 @@
 				</includes>
 			</resource>
 		</resources>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
