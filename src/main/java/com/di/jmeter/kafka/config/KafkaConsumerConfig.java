@@ -72,7 +72,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
         JMeterVariables variables = getThreadContext().getVariables();
 
         if (variables.getObject(kafkaConsumerClientVariableName) != null) {
-            LOGGER.error("Kafka consumer is already running..");
+            LOGGER.error("Kafka consumer is already running.");
         } else {
             synchronized (this) {
                 try {
@@ -81,8 +81,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
                     variables.putObject(kafkaConsumerClientVariableName, kafkaConsumer);
                     LOGGER.info("Kafka consumer client successfully Initialized");
                 } catch (Exception e) {
-                    LOGGER.error("Error establishing kafka consumer client !!");
-                    e.printStackTrace();
+                    LOGGER.error("Error establishing kafka consumer client!", e);
                 }
             }
         }
