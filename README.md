@@ -62,8 +62,11 @@ Kudos to the [Instaclustr](https://www.instaclustr.com/) team to make it easier 
 
 
 ## 💲 Support Me
-[<a href="https://www.buymeacoffee.com/rollno748" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="45px" width="162px" alt="Buy Me A Coffee"></a>](https://www.buymeacoffee.com/rollno748)
+<!-- [<a href="https://www.buymeacoffee.com/rollno748" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="45px" width="162px" alt="Buy Me A Coffee"></a>](https://www.buymeacoffee.com/rollno748) -->
+If this project help you reduce time to develop, you can give me a cup of coffee :) 
 
-Please rate a :star2: if you like it.
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://ko-fi.com/rollno748)
+
+Please rate a :star2: if you like it / benefits you.
 
 Please open up a :beetle: - If you experienced something.
