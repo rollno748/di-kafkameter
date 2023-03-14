@@ -74,7 +74,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 		JMeterVariables variables = getThreadContext().getVariables();
 
 		if (variables.getObject(kafkaProducerClientVariableName) != null) {
-			LOGGER.error("Kafka Client is already running..");
+			LOGGER.error("Kafka Client is already running.");
 		} else {
 			synchronized (this) {
 				try {
@@ -82,8 +82,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
 					LOGGER.info("Kafka Producer client successfully Initialized");
 				} catch (Exception e) {
-					LOGGER.error("Error establishing Kafka producer client !!");
-					e.printStackTrace();
+					LOGGER.error("Error establishing Kafka producer client!", e);
 				}
 			}
 		}

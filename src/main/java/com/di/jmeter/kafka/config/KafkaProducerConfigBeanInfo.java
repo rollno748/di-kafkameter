@@ -86,13 +86,13 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 
 		connectionConfigPropDesc =  property("serializerKey");
 		connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
+		connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringSerializer");
 		connectionConfigPropDesc.setDisplayName("Serializer Key");
 		connectionConfigPropDesc.setShortDescription("Serializer Key");
 
 		connectionConfigPropDesc =  property("serializerValue");
 		connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
+		connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringSerializer");
 		connectionConfigPropDesc.setDisplayName("Serializer Value");
 		connectionConfigPropDesc.setShortDescription("Serializer Value (must accept String input)");
 
