@@ -24,6 +24,7 @@ This plugin is an extended version of Kafkameter with restructured UI and additi
 
 ## What's New?
 
+* Fixed the serializer default value for producer 
 * Consumer Support Enhancement
 * Provided support for security (Including JAAS support)
 * Removed redundant libraries and built as non shaded jar.
@@ -31,7 +32,7 @@ This plugin is an extended version of Kafkameter with restructured UI and additi
 
 ## Installation Instructions
 
-* Download the source code from the Github.
+* Download the source code from the GitHub.
 * Just do a mvn clean install (M2 is required)
 * Jar will be generated under the target directory (di-kafkameter-1.1.jar).
 * Copy the Jar to \<Jmeter Installed Directory\>/lib/ext/
