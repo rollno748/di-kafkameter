@@ -62,7 +62,6 @@ Kudos to the [Instaclustr](https://www.instaclustr.com/) team to make it easier 
 * Kafka Docs: https://kafka.apache.org/documentation/
 * Plugin Overview: https://github.com/BrightTag/kafkameter
 * Adding headers to kafka message: https://stackoverflow.com/questions/29025627/adding-custom-headers-in-kafka-message
-* TableEditor : https://www.programcreek.com/java-api-examples/?api=org.apache.jmeter.testbeans.gui.TableEditor
 
 
 ## 💲 Support Me
