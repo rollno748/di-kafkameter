@@ -29,12 +29,15 @@ This plugin is an extended version of Kafkameter with restructured UI and additi
 * Provided support for security (Including JAAS support)
 * Removed redundant libraries and built as non shaded jar.
 * Ability with the consumer to define the no of records to read per request
+* support Jmeter5.6.2
+* consumer support async commit
+* Consumer support muti-thread
 
 ## Installation Instructions
 
 * Download the source code from the GitHub.
 * Just do a mvn clean install (M2 is required)
-* Jar will be generated under the target directory (di-kafkameter-1.1.jar).
+* Jar will be generated under the target directory (di-kafkameter-1.3.jar).
 * Copy the Jar to \<Jmeter Installed Directory\>/lib/ext/
 
 ## Config Elements
