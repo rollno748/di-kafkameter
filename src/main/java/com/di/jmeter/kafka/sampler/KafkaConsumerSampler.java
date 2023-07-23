@@ -1,50 +1,34 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 package com.di.jmeter.kafka.sampler;
 
 import com.google.common.base.Strings;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.engine.util.ConfigMergabilityIndicator;
-import org.apache.jmeter.gui.Searchable;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.testelement.TestStateListener;
+import org.apache.jmeter.testelement.ThreadListener;
 import org.apache.jmeter.threads.JMeterContextService;
-import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Properties;
 
 public class KafkaConsumerSampler extends AbstractTestElement
-        implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
+        implements Sampler, TestBean, ThreadListener, ConfigMergabilityIndicator {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerSampler.class);
 
     private String kafkaConsumerClientVariableName;
@@ -62,7 +46,6 @@ public class KafkaConsumerSampler extends AbstractTestElement
             if(this.kafkaConsumer == null){
                 this.validateClient();
             }
-
             result.setSampleLabel(getName());
             result.setDataType(SampleResult.TEXT);
             result.setContentType("text/plain");
@@ -102,12 +85,11 @@ public class KafkaConsumerSampler extends AbstractTestElement
             if(getCommitType().equalsIgnoreCase("sync")){
                 kafkaConsumer.commitSync(offset); //Commit the offset after reading single message
             }else{
-                kafkaConsumer.commitAsync((OffsetCommitCallback) offset);//Commit the offset after reading single message
+                kafkaConsumer.commitAsync();//Commit the offset after reading single message
             }
         }
         return records;
     }
-
 
     private void processRecordsToResults(ConsumerRecords<String, Object> consumerRecords, SampleResult result) {
         if(!consumerRecords.isEmpty()){
@@ -127,7 +109,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
     }
 
     private void validateClient() {
-        if (this.kafkaConsumer == null && getKafkaConsumer() != null) {
+        if (this.kafkaConsumer == null) {
             this.kafkaConsumer = getKafkaConsumer();
         }else{
             throw new RuntimeException("Kafka Consumer Client not found. Check Variable Name in KafkaConsumerSampler.");
@@ -147,21 +129,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
         return false;
     }
 
-    @Override
-    public void testStarted() {
-    }
-    @Override
-    public void testStarted(String s) {
-    }
-    @Override
-    public void testEnded() {
-    }
-    @Override
-    public void testEnded(String s) {
-    }
-
     //Getters and setters
-
     public String getKafkaConsumerClientVariableName() {
         return kafkaConsumerClientVariableName;
     }
@@ -186,9 +154,24 @@ public class KafkaConsumerSampler extends AbstractTestElement
         this.commitType = commitType;
     }
 
-    @SuppressWarnings("unchecked")
     public KafkaConsumer<String, Object> getKafkaConsumer() {
-        return (KafkaConsumer<String, Object>) JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName());
+        LOGGER.info("KafkaConsumerSampler:{}",this.kafkaConsumerClientVariableName);
+
+        Properties pro = (Properties)JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName()+"props");
+        String topic = (String)JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName()+"topic");
+        kafkaConsumer = new KafkaConsumer<>(pro);
+        kafkaConsumer.subscribe(Collections.singletonList(topic));
+        return kafkaConsumer;
+    }
+
+    @Override
+    public void threadStarted() {
+            LOGGER.info("threadStarted");
+    }
+
+    @Override
+    public void threadFinished() {
+        kafkaConsumer.close();
     }
 
 }

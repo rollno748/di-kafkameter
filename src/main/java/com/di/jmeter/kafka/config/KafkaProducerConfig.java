@@ -17,11 +17,7 @@
  */
 package com.di.jmeter.kafka.config;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Properties;
-
-import org.apache.jmeter.config.ConfigElement;
+import com.di.jmeter.kafka.utils.VariableSettings;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testbeans.TestBeanHelper;
@@ -32,14 +28,13 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.di.jmeter.kafka.utils.VariableSettings;
+import java.util.List;
+import java.util.Properties;
 
 public class KafkaProducerConfig extends ConfigTestElement
-		implements ConfigElement, TestBean, TestStateListener, Serializable {
+		implements TestBean, TestStateListener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfig.class);
-	private static final long serialVersionUID = 3328926106250797599L;
-
 	private KafkaProducer<String, Object> kafkaProducer;
 	private List<VariableSettings> extraConfigs;
 
@@ -58,16 +53,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	private String kafkaSslPrivateKeyPass;
 
 	@Override
-	public void addConfigElement(ConfigElement config) {
-
-	}
-
-	@Override
-	public boolean expectsModification() {
-		return false;
-	}
-
-	@Override
 	public void testStarted() {
 		this.setRunningVersion(true);
 		TestBeanHelper.prepare(this);
@@ -78,7 +63,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 		} else {
 			synchronized (this) {
 				try {
-					kafkaProducer = new KafkaProducer<>(getProps());
+					kafkaProducer = new KafkaProducer(getProps0());
 					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
 					LOGGER.info("Kafka Producer client successfully Initialized");
 				} catch (Exception e) {
@@ -88,7 +73,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 		}
 	}
 
-	private Properties getProps() {
+	private Properties getProps0() {
 		Properties props = new Properties();
 
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
