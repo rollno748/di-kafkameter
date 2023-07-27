@@ -83,12 +83,12 @@ public class KafkaProducerConfig extends ConfigTestElement
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, getSerializerValue());
 		props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 
-		LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
+		LOGGER.debug("Producer Additional Config Size::: " + getExtraConfigs().size());
 		if (getExtraConfigs().size() >= 1) {
-			LOGGER.info("Setting up Additional properties");
+			LOGGER.info("Setting up Producer Additional properties");
 			for (VariableSettings entry : getExtraConfigs()){
 				props.put(entry.getConfigKey(), entry.getConfigValue());
-				LOGGER.debug(String.format("Adding property : %s", entry.getConfigKey()));
+				LOGGER.debug(String.format("Adding Producer property : %s", entry.getConfigKey()));
 			}
 		}
 

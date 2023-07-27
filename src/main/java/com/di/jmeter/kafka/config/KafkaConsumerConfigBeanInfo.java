@@ -53,7 +53,7 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
 
         createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaConsumerClientVariableName"});
         //Connection configs
-        createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "groupId", "topic", "deSerializerKey", "deSerializerValue", "numberOfMsgToPoll", "autoCommit"});
+        createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "groupId", "topic", "deSerializerKey", "deSerializerValue", "numberOfMsgToPoll", "autoCommit", "autoOffsetReset"});
         //Security configs
         createPropertyGroup("Security", new String[] {SECURITYTYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
         //Additional configs
@@ -106,6 +106,12 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         connectionConfigPropDesc.setValue(DEFAULT, Boolean.TRUE);
         connectionConfigPropDesc.setDisplayName("Auto Commit");
         connectionConfigPropDesc.setShortDescription("Commit offsets returned on the last poll() for all the subscribed list of topics and partitions");
+
+        connectionConfigPropDesc = property("autoOffsetReset");
+        connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+        connectionConfigPropDesc.setValue(DEFAULT, "latest");
+        connectionConfigPropDesc.setDisplayName("Auto Offset Reset");
+        connectionConfigPropDesc.setShortDescription("What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server");
 
         PropertyDescriptor securityDescriptor =  property(SECURITYTYPE, TypeEditor.ComboStringEditor);
         securityDescriptor.setValue(RESOURCE_BUNDLE, getBeanDescriptor().getValue(RESOURCE_BUNDLE));

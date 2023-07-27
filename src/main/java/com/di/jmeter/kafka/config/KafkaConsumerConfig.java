@@ -32,6 +32,7 @@ public class KafkaConsumerConfig extends ConfigTestElement
     private String kafkaSslTruststore;
     private String kafkaSslTruststorePassword;
     private String kafkaSslPrivateKeyPass;
+    private String autoOffsetReset;
 
     @Override
     public void testStarted() {
@@ -65,12 +66,14 @@ public class KafkaConsumerConfig extends ConfigTestElement
         props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, isAutoCommit());
 
-        LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
+        LOGGER.info(getAutoOffsetReset());
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, getAutoOffsetReset());
+        LOGGER.debug("Consumer Additional Config Size::: " + getExtraConfigs().size());
         if (getExtraConfigs().size() >= 1) {
-            LOGGER.info("Setting up Additional properties");
+            LOGGER.info("Setting Producer up Additional properties");
             for (VariableSettings entry : getExtraConfigs()){
                 props.put(entry.getConfigKey(), entry.getConfigValue());
-                LOGGER.debug(String.format("Adding property : %s", entry.getConfigKey()));
+                LOGGER.debug(String.format("Adding Producer property : %s", entry.getConfigKey()));
             }
         }
 
@@ -220,5 +223,13 @@ public class KafkaConsumerConfig extends ConfigTestElement
 
     public void setDeSerializerValue(String deSerializerValue) {
         this.deSerializerValue = deSerializerValue;
+    }
+
+
+    public void setAutoOffsetReset(String autoOffsetReset){
+        this.autoOffsetReset = autoOffsetReset;
+    }
+    public String getAutoOffsetReset(){
+        return this.autoOffsetReset;
     }
 }

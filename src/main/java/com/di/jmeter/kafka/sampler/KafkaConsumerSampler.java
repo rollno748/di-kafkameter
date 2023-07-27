@@ -35,6 +35,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
     private String pollTimeout;
     private String commitType;
     private final long DEFAULT_TIMEOUT = 100;
+    private Properties properties;
 
     private KafkaConsumer<String, Object> kafkaConsumer;
 
@@ -157,10 +158,11 @@ public class KafkaConsumerSampler extends AbstractTestElement
     public KafkaConsumer<String, Object> getKafkaConsumer() {
         LOGGER.info("KafkaConsumerSampler:{}",this.kafkaConsumerClientVariableName);
 
-        Properties pro = (Properties)JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName()+"props");
+        properties = (Properties)JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName()+"props");
         String topic = (String)JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName()+"topic");
-        kafkaConsumer = new KafkaConsumer<>(pro);
+        kafkaConsumer = new KafkaConsumer<>(properties);
         kafkaConsumer.subscribe(Collections.singletonList(topic));
+
         return kafkaConsumer;
     }
 
@@ -171,6 +173,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
 
     @Override
     public void threadFinished() {
+        properties.clear();
         kafkaConsumer.close();
     }
 

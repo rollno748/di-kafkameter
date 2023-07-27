@@ -14,9 +14,10 @@
 		<jdk.version>1.8</jdk.version>
 		<jmeter-version>5.6.2</jmeter-version>
 		<kafka.client.version>3.3.1</kafka.client.version>
-		<slf4j-api-version>1.7.29</slf4j-api-version>
+		<slf4j-api-version>1.7.5</slf4j-api-version>
 		<guava-version>31.1-jre</guava-version>
 		<jmeter.lib.scope>provided</jmeter.lib.scope>
+		<slf4j.version>1.7.21</slf4j.version>
 	</properties>
 
 	<dependencies>
@@ -24,6 +25,7 @@
 			<groupId>org.apache.jmeter</groupId>
 			<artifactId>ApacheJMeter_java</artifactId>
 			<version>${jmeter-version}</version>
+
 			<scope>${jmeter.lib.scope}</scope>
 		</dependency>
 		<!-- Kafka Dependencies -->
@@ -33,10 +35,20 @@
 			<version>${kafka.client.version}</version>
 		</dependency>
 		<!--Not required for bundle-->
+<!--		<dependency>-->
+<!--			<groupId>org.slf4j</groupId>-->
+<!--			<artifactId>slf4j-api</artifactId>-->
+<!--			<version>${slf4j-api-version}</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j-api-version}</version>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.fastjson2</groupId>
+			<artifactId>fastjson2</artifactId>
+			<version>2.0.19</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -51,6 +63,9 @@
 				<includes>
 					<include>**/*.properties</include>
 				</includes>
+				<excludes>
+					<exclude>log4j2.xml</exclude>
+				</excludes>
 			</resource>
 		</resources>
 		<plugins>
