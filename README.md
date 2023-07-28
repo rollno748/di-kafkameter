@@ -29,12 +29,15 @@ This plugin is an extended version of Kafkameter with restructured UI and additi
 * Provided support for security (Including JAAS support)
 * Removed redundant libraries and built as non shaded jar.
 * Ability with the consumer to define the no of records to read per request
+* support Jmeter5.6.2
+* consumer support async commit
+* Consumer support muti-thread
 
 ## Installation Instructions
 
 * Download the source code from the GitHub.
 * Just do a mvn clean install (M2 is required)
-* Jar will be generated under the target directory (di-kafkameter-1.1.jar).
+* Jar will be generated under the target directory (di-kafkameter-1.3.jar).
 * Copy the Jar to \<Jmeter Installed Directory\>/lib/ext/
 
 ## Config Elements
@@ -57,17 +60,12 @@ Kudos to the [Instaclustr](https://www.instaclustr.com/) team to make it easier 
 ## References
 
 * Kafka Docs: https://kafka.apache.org/documentation/
-* Plugin Overview: https://github.com/BrightTag/kafkameter
 * Adding headers to kafka message: https://stackoverflow.com/questions/29025627/adding-custom-headers-in-kafka-message
-* TableEditor : https://www.programcreek.com/java-api-examples/?api=org.apache.jmeter.testbeans.gui.TableEditor
 
 
 ## 💲 Support Me
-<!-- [<a href="https://www.buymeacoffee.com/rollno748" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="45px" width="162px" alt="Buy Me A Coffee"></a>](https://www.buymeacoffee.com/rollno748) -->
-If this project help you reduce time to develop, you can give me a cup of coffee :) 
+If this project help you reduce time to develop, you can give me a cup of coffee :)
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://ko-fi.com/rollno748)
-
-Please rate a :star2: if you like it / benefits you.
+![](img.png)
 
 Please open up a :beetle: - If you experienced something.
