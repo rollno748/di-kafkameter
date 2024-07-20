@@ -115,7 +115,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
             StringBuilder response = new StringBuilder();
             for(ConsumerRecord<String, Object> record : consumerRecords){
                 headers.append(String.format("Timestamp: %s\nTopic: %s\nPartition: %s\nOffset: %s\nHeaders: %s\n\n", record.timestamp(), record.topic(), record.partition(), record.offset(), record.headers().toString()));
-                response.append(record.key() + ": " + record.value().toString()+"\n\n");
+                response.append(record.key()).append(": ").append(record.value().toString()).append("\n\n");
             }
             result.setResponseHeaders(String.valueOf(headers));
             result.setResponseData(String.valueOf(response), StandardCharsets.UTF_8.name());
