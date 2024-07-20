@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="Client" elementType="Argument">
+            <stringProp name="Argument.name">Client</stringProp>
+            <stringProp name="Argument.value">client-</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <com.di.jmeter.kafka.config.KafkaProducerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaProducerConfig" testname="Kafka Producer Config">
+        <stringProp name="batchSize">16384</stringProp>
+        <stringProp name="clientId">jmeter1</stringProp>
+        <collectionProp name="extraConfigs">
+          <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+            <stringProp name="configKey">sasl.mechanism</stringProp>
+            <stringProp name="configValue">SCRAM-SHA-256</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+            <stringProp name="configValue">org.apache.kafka.common.security.scram.ScramLoginModule required username=&quot;ickafka&quot; password=&quot;306444aee4af44be499247ce168f3e44e080e5b2a4876dbc1be6a6baf72fa801&quot;;</stringProp>
+            <stringProp name="configKey">sasl.jaas.config</stringProp>
+          </elementProp>
+        </collectionProp>
+        <stringProp name="kafkaBrokers">35.241.131.111:9092,34.140.239.121:9092,34.76.236.9:9092</stringProp>
+        <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
+        <stringProp name="kafkaSslKeystore"></stringProp>
+        <stringProp name="kafkaSslKeystorePassword">Chang3M3</stringProp>
+        <stringProp name="kafkaSslPrivateKeyPass">Chang3M3</stringProp>
+        <stringProp name="kafkaSslTruststore"></stringProp>
+        <stringProp name="kafkaSslTruststorePassword">Chang3M3</stringProp>
+        <stringProp name="securityType">securityType.sasl_plaintext</stringProp>
+        <stringProp name="serializerKey">org.apache.kafka.common.serialization.StringSerializer</stringProp>
+        <stringProp name="serializerValue">org.apache.kafka.common.serialization.ByteArraySerializer</stringProp>
+      </com.di.jmeter.kafka.config.KafkaProducerConfig>
+      <hashTree/>
+      <com.di.jmeter.kafka.config.KafkaConsumerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaConsumerConfig" testname="Kafka Consumer Client-1" enabled="false">
+        <stringProp name="deSerializerKey">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
+        <stringProp name="deSerializerValue">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
+        <collectionProp name="extraConfigs">
+          <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+            <stringProp name="configKey">sasl.mechanism</stringProp>
+            <stringProp name="configValue">SCRAM-SHA-256</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+            <stringProp name="configKey">sasl.jaas.config</stringProp>
+            <stringProp name="configValue">org.apache.kafka.common.security.scram.ScramLoginModule required username=&quot;ickafka&quot; password=&quot;306444aee4af44be499247ce168f3e44e080e5b2a4876dbc1be6a6baf72fa801&quot;;</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+            <stringProp name="configKey">auto.offset.reset</stringProp>
+            <stringProp name="configValue">earliest</stringProp>
+          </elementProp>
+        </collectionProp>
+        <stringProp name="groupId">my-consumer-client1</stringProp>
+        <stringProp name="kafkaBrokers">35.241.131.111:9092,34.140.239.121:9092,34.76.236.9:9092</stringProp>
+        <stringProp name="kafkaConsumerClientVariableName">Client-1</stringProp>
+        <stringProp name="kafkaSslKeystore"></stringProp>
+        <stringProp name="kafkaSslKeystorePassword">Chang3M3</stringProp>
+        <stringProp name="kafkaSslPrivateKeyPass">Chang3M3</stringProp>
+        <stringProp name="kafkaSslTruststore"></stringProp>
+        <stringProp name="kafkaSslTruststorePassword">Chang3M3</stringProp>
+        <stringProp name="securityType">securityType.sasl_plaintext</stringProp>
+        <stringProp name="topic">inbound</stringProp>
+        <stringProp name="numberOfMsgToPoll">1</stringProp>
+        <boolProp name="autoCommit">true</boolProp>
+      </com.di.jmeter.kafka.config.KafkaConsumerConfig>
+      <hashTree/>
+      <com.di.jmeter.kafka.config.KafkaConsumerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaConsumerConfig" testname="Kafka Consumer Client-2" enabled="false">
+        <stringProp name="deSerializerKey">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
+        <stringProp name="deSerializerValue">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
+        <collectionProp name="extraConfigs">
+          <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+            <stringProp name="configKey">sasl.mechanism</stringProp>
+            <stringProp name="configValue">SCRAM-SHA-256</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+            <stringProp name="configKey">sasl.jaas.config</stringProp>
+            <stringProp name="configValue">org.apache.kafka.common.security.scram.ScramLoginModule required username=&quot;ickafka&quot; password=&quot;306444aee4af44be499247ce168f3e44e080e5b2a4876dbc1be6a6baf72fa801&quot;;</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+            <stringProp name="configKey">auto.offset.reset</stringProp>
+            <stringProp name="configValue">earliest</stringProp>
+          </elementProp>
+        </collectionProp>
+        <stringProp name="groupId">my-consumer-client2</stringProp>
+        <stringProp name="kafkaBrokers">35.241.131.111:9092,34.140.239.121:9092,34.76.236.9:9092</stringProp>
+        <stringProp name="kafkaConsumerClientVariableName">Client-2</stringProp>
+        <stringProp name="kafkaSslKeystore"></stringProp>
+        <stringProp name="kafkaSslKeystorePassword">Chang3M3</stringProp>
+        <stringProp name="kafkaSslPrivateKeyPass">Chang3M3</stringProp>
+        <stringProp name="kafkaSslTruststore"></stringProp>
+        <stringProp name="kafkaSslTruststorePassword">Chang3M3</stringProp>
+        <stringProp name="securityType">securityType.sasl_plaintext</stringProp>
+        <stringProp name="topic">inbound</stringProp>
+        <stringProp name="numberOfMsgToPoll">1</stringProp>
+        <boolProp name="autoCommit">true</boolProp>
+      </com.di.jmeter.kafka.config.KafkaConsumerConfig>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Producer">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once" enabled="false"/>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop" enabled="false">
+            <boolProp name="LoopController.continue_forever">true</boolProp>
+            <stringProp name="LoopController.loops">100</stringProp>
+          </LoopController>
+          <hashTree>
+            <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler" enabled="true">
+              <stringProp name="kafkaMessage">{&quot;Message&quot;: &quot;It&apos;s a Send from DI Kafka Sampler 1.1!&quot;, &quot;time&quot;: &quot;${__timeShift(,,,,)}&quot;}</stringProp>
+              <stringProp name="kafkaMessageKey">jmeter-key1</stringProp>
+              <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
+              <stringProp name="kafkaTopic">inbound</stringProp>
+              <collectionProp name="messageHeaders">
+                <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+                  <stringProp name="headerKey">key1</stringProp>
+                  <stringProp name="headerValue">val1</stringProp>
+                </elementProp>
+              </collectionProp>
+              <stringProp name="partitionString"></stringProp>
+            </com.di.jmeter.kafka.sampler.KafkaProducerSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler" enabled="true">
+          <stringProp name="kafkaMessage">{&quot;Message&quot;: &quot;It&apos;s a Send from DI Kafka Sampler 1.1!&quot;, &quot;time&quot;: &quot;${__timeShift(,,,,)}&quot;}</stringProp>
+          <stringProp name="kafkaMessageKey">jmeter-key1</stringProp>
+          <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
+          <stringProp name="kafkaTopic">inbound</stringProp>
+          <collectionProp name="messageHeaders">
+            <elementProp name="" elementType="com.di.jmeter.kafka.utils.VariableSettings">
+              <stringProp name="headerKey">key1</stringProp>
+              <stringProp name="headerValue">val1</stringProp>
+            </elementProp>
+          </collectionProp>
+          <stringProp name="partitionString"></stringProp>
+        </com.di.jmeter.kafka.sampler.KafkaProducerSampler>
+        <hashTree>
+          <ConstantThroughputTimer guiclass="TestBeanGUI" testclass="ConstantThroughputTimer" testname="Constant Throughput Timer" enabled="true">
+            <intProp name="calcMode">2</intProp>
+            <doubleProp>
+              <name>throughput</name>
+              <value>600.0</value>
+              <savedValue>0.0</savedValue>
+            </doubleProp>
+          </ConstantThroughputTimer>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">prev.setIgnore()</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Consumer" enabled="false">
+        <intProp name="ThreadGroup.num_threads">2</intProp>
+        <intProp name="ThreadGroup.ramp_time">30</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.di.jmeter.kafka.sampler.KafkaConsumerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaConsumerSampler" testname="Consumer - Client-${__threadNum}" enabled="true">
+          <boolProp name="autoCommit">true</boolProp>
+          <stringProp name="commitType">Sync</stringProp>
+          <stringProp name="kafkaConsumerClientVariableName">Client-${__threadNum}</stringProp>
+          <stringProp name="pollTimeout">6000</stringProp>
+        </com.di.jmeter.kafka.sampler.KafkaConsumerSampler>
+        <hashTree>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="false">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters">${__threadNum}</stringProp>
+            <stringProp name="script">vars.put(&quot;Client&quot;, &quot;client_&quot;+args[0]);</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

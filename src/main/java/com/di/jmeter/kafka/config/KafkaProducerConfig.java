@@ -39,12 +39,9 @@ public class KafkaProducerConfig extends ConfigTestElement
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfig.class);
 	private static final long serialVersionUID = 3328926106250797599L;
-
 	private KafkaProducer<String, Object> kafkaProducer;
 	private List<VariableSettings> extraConfigs;
-
 	private String kafkaProducerClientVariableName;
-
 	private String kafkaBrokers;
 	private String batchSize; // default: 16384
 	private String clientId;
@@ -62,12 +59,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 
 	}
 
-	@Override
-	public boolean expectsModification() {
-		return false;
-	}
-
-	@Override
+    @Override
 	public void testStarted() {
 		this.setRunningVersion(true);
 		TestBeanHelper.prepare(this);
@@ -99,7 +91,7 @@ public class KafkaProducerConfig extends ConfigTestElement
 		props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 
 		LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
-		if (getExtraConfigs().size() >= 1) {
+		if (!getExtraConfigs().isEmpty()) {
 			LOGGER.info("Setting up Additional properties");
 			for (VariableSettings entry : getExtraConfigs()){
 				props.put(entry.getConfigKey(), entry.getConfigValue());

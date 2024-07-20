@@ -19,10 +19,7 @@ package com.di.jmeter.kafka.sampler;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Future;
 
 import com.di.jmeter.kafka.utils.VariableSettings;
@@ -53,17 +50,15 @@ public class KafkaProducerSampler extends AbstractTestElement
 	private static final long serialVersionUID = -1299097780294947281L;
 
 	private static final Set<String> APPLIABLE_CONFIG_CLASSES = new HashSet<>(
-			Arrays.asList("org.apache.jmeter.config.gui.SimpleConfigGui"));
+            Collections.singletonList("org.apache.jmeter.config.gui.SimpleConfigGui"));
 
 	private String kafkaProducerClientVariableName;
 	private String kafkaTopic;
 	private String partitionString;
 	private String kafkaMessageKey;
-	private String kafkaMessage;
+	private Object kafkaMessage;
 	private List<VariableSettings> messageHeaders;
-
 	private KafkaProducer<String, Object> kafkaProducer;
-	private ProducerRecord<String, Object> producerRecord;
 
 	@Override
 	public SampleResult sample(Entry e) {
@@ -79,7 +74,7 @@ public class KafkaProducerSampler extends AbstractTestElement
 			result.setDataType(SampleResult.TEXT);
 			result.setContentType("text/plain");
 			result.setDataEncoding(StandardCharsets.UTF_8.name());
-			result.setSamplerData(getKafkaMessageKey()+": "+getKafkaMessage());
+			result.setSamplerData(getKafkaMessageKey()+": "+getKafkaMessage().toString());
 			result.setRequestHeaders(producerRecord.headers().toString());
 			result.sampleStart();
 			Future<RecordMetadata> metaData = kafkaProducer.send(producerRecord);
@@ -127,15 +122,16 @@ public class KafkaProducerSampler extends AbstractTestElement
 	}
 
 	private ProducerRecord<String, Object> getProducerRecord() {
+		ProducerRecord<String, Object> producerRecord;
 		if (Strings.isNullOrEmpty(getPartitionString())) {
 			producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), getKafkaMessageKey(), getKafkaMessage());
 		} else {
 			final int partitionNumber = Integer.parseInt(getPartitionString());
 			producerRecord = new ProducerRecord<String, Object>(getKafkaTopic(), partitionNumber, getKafkaMessageKey(), getKafkaMessage());
 		}
-		LOGGER.debug("Additional Headers Size::: "+ getMessageHeaders().size());
+		LOGGER.debug("Additional Headers Size:: "+ getMessageHeaders().size());
 
-		if (getMessageHeaders().size() >= 1) {
+		if (!getMessageHeaders().isEmpty()) {
 			LOGGER.debug("Setting up additional header to message");
 			for (VariableSettings entry : getMessageHeaders()){
 				producerRecord.headers().add(new RecordHeader(entry.getHeaderKey(), entry.getHeaderValue().getBytes()));
@@ -184,13 +180,20 @@ public class KafkaProducerSampler extends AbstractTestElement
 		this.kafkaMessageKey = kafkaMessageKey;
 	}
 
-	public String getKafkaMessage() {
+	public Object getKafkaMessage() {
 		return kafkaMessage;
 	}
 
-	public void setKafkaMessage(String kafkaMessage) {
+	public void setKafkaMessage(Object kafkaMessage) {
 		this.kafkaMessage = kafkaMessage;
 	}
+	//	public String getKafkaMessage() {
+//		return (String) kafkaMessage;
+//	}
+//
+//	public void setKafkaMessage(String kafkaMessage) {
+//		this.kafkaMessage = kafkaMessage;
+//	}
 
 	public List<VariableSettings> getMessageHeaders() {
 		return messageHeaders;
