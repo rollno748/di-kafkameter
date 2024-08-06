@@ -17,21 +17,23 @@
  */
 package com.di.jmeter.kafka.sampler;
 
+import com.di.jmeter.kafka.config.KafkaConsumerConfig;
 import com.google.common.base.Strings;
-import org.apache.jmeter.config.ConfigTestElement;
-import org.apache.jmeter.engine.util.ConfigMergabilityIndicator;
 import org.apache.jmeter.gui.Searchable;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterContextService;
-import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,16 +45,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Map;
 
-public class KafkaConsumerSampler extends AbstractTestElement
-        implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
+public class KafkaConsumerSampler<K, V> extends AbstractTestElement
+        implements Sampler, TestBean, TestStateListener, Serializable, Searchable {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerSampler.class);
-
+    private static final long DEFAULT_TIMEOUT = 100L;
     private String kafkaConsumerClientVariableName;
     private String pollTimeout;
     private String commitType;
-    private final long DEFAULT_TIMEOUT = 100;
 
-    private KafkaConsumer<String, Object> kafkaConsumer;
+
+    private KafkaConsumer<K, V> kafkaConsumer;
 
     @Override
     public SampleResult sample(Entry entry) {
@@ -68,7 +70,6 @@ public class KafkaConsumerSampler extends AbstractTestElement
             result.setContentType("text/plain");
             result.setDataEncoding(StandardCharsets.UTF_8.name());
             result.setRequestHeaders(String.format("TimeStamp: %s\n", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))));
-
             result.sampleStart();
             this.processRecordsToResults(getConsumerRecords(), result);
 
@@ -81,39 +82,81 @@ public class KafkaConsumerSampler extends AbstractTestElement
         return result;
     }
 
-    private ConsumerRecords<String, Object> getConsumerRecords() {
-        ConsumerRecords<String, Object> records;
-        this.pollTimeout = (Strings.isNullOrEmpty(pollTimeout)) ?  String.valueOf(DEFAULT_TIMEOUT) : pollTimeout;
+    private ConsumerRecords<K, V> getConsumerRecords() {
+        String keyDeserializerClassName = getKeyDeserializer();
+        String valueDeserializerClassName = getValueDeserializer();
 
-        // This will poll Single/multiple messages of records as per the config
-        do{
-            records = kafkaConsumer.poll(Duration.ofMillis(Long.parseLong(getPollTimeout())));
-        }while(records.isEmpty());
-
-        for(ConsumerRecord<String, Object> record : records){
-            record = records.iterator().next();
-            LOGGER.debug(String.format("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value()));
-            // commit offset of the message
-            Map<TopicPartition, OffsetAndMetadata> offset = Collections.singletonMap(
-                    new TopicPartition(record.topic(), record.partition()),
-                    new OffsetAndMetadata(record.offset() + 1)
-            );
-
-            if(getCommitType().equalsIgnoreCase("sync")){
-                kafkaConsumer.commitSync(offset); //Commit the offset after reading single message
-            }else{
-                kafkaConsumer.commitAsync((OffsetCommitCallback) offset);//Commit the offset after reading single message
-            }
+        if (keyDeserializerClassName == null || valueDeserializerClassName == null) {
+            throw new IllegalStateException("Key or Value deserializer is null");
         }
-        return records;
+
+        try{
+            Class<?> keyDeserializerClass = Class.forName(keyDeserializerClassName);
+            Class<?> valueDeserializerClass = Class.forName(valueDeserializerClassName);
+
+            this.pollTimeout = (Strings.isNullOrEmpty(pollTimeout)) ?  String.valueOf(DEFAULT_TIMEOUT) : pollTimeout;
+            ConsumerRecords<K, V> records;
+
+            do {
+                // This will poll Single/multiple messages of records as per the config
+                records = kafkaConsumer.poll(Duration.ofMillis(Long.parseLong(getPollTimeout())));
+            } while (records.isEmpty());
+
+            for(ConsumerRecord<K, V> record : records){
+                K key = getTypedValue(record.key(), keyDeserializerClass);
+                V value = getTypedValue(record.value(), valueDeserializerClass);
+
+                LOGGER.debug(String.format("offset = %d, key = %s, value = %s%n", record.offset(), key, value));
+
+                // Commit offset of the message
+                Map<TopicPartition, OffsetAndMetadata> offset = Collections.singletonMap(
+                        new TopicPartition(record.topic(), record.partition()),
+                        new OffsetAndMetadata(record.offset() + 1)
+                );
+
+                if(getCommitType().equalsIgnoreCase("sync")){
+                    kafkaConsumer.commitSync(offset); //Commit the offset after reading single message
+                }else{
+                    //Commit the offset after reading single message
+                    kafkaConsumer.commitAsync((offsets, exception) -> {
+                        if (exception != null) {
+                            LOGGER.error("Async commit failed for offsets " + offsets, exception);
+                        }
+                    });
+                }
+            }
+            return records;
+        }catch (ClassNotFoundException cnfe){
+            throw new IllegalStateException("Invalid deserializer class", cnfe);
+        }
     }
 
+    @SuppressWarnings("unchecked")
+    private <T> T getTypedValue(Object value, Class<?> deserializerClass) {
+        if (value == null) {
+            return null;
+        }
 
-    private void processRecordsToResults(ConsumerRecords<String, Object> consumerRecords, SampleResult result) {
+        if (deserializerClass.equals(StringDeserializer.class)) {
+            return (T) value.toString();
+        } else if (deserializerClass.equals(IntegerDeserializer.class)) {
+            return (T) Integer.valueOf(value.toString());
+        } else if (deserializerClass.equals(LongDeserializer.class)) {
+            return (T) Long.valueOf(value.toString());
+        } else if (deserializerClass.equals(DoubleDeserializer.class)) {
+            return (T) Double.valueOf(value.toString());
+        } else if (deserializerClass.equals(ByteArrayDeserializer.class)) {
+            return (T) value;
+        } else {
+            throw new IllegalArgumentException("Unsupported deserializer type: " + deserializerClass.getName());
+        }
+    }
+
+    private void processRecordsToResults(ConsumerRecords<K, V> consumerRecords, SampleResult result) {
         if(!consumerRecords.isEmpty()){
             StringBuilder headers = new StringBuilder();
             StringBuilder response = new StringBuilder();
-            for(ConsumerRecord<String, Object> record : consumerRecords){
+            for(ConsumerRecord<K, V> record : consumerRecords){
                 headers.append(String.format("Timestamp: %s\nTopic: %s\nPartition: %s\nOffset: %s\nHeaders: %s\n\n", record.timestamp(), record.topic(), record.partition(), record.offset(), record.headers().toString()));
                 response.append(record.key()).append(": ").append(record.value().toString()).append("\n\n");
             }
@@ -128,7 +171,7 @@ public class KafkaConsumerSampler extends AbstractTestElement
 
     private void validateClient() {
         if (this.kafkaConsumer == null && getKafkaConsumer() != null) {
-            this.kafkaConsumer = getKafkaConsumer();
+            this.kafkaConsumer = (KafkaConsumer<K, V>) getKafkaConsumer();
         }else{
             throw new RuntimeException("Kafka Consumer Client not found. Check Variable Name in KafkaConsumerSampler.");
         }
@@ -140,11 +183,6 @@ public class KafkaConsumerSampler extends AbstractTestElement
         result.setResponseData(String.format("Error sending message to kafka topic : %s", ex.toString()).getBytes());
         result.setSuccessful(false);
         return result;
-    }
-
-    @Override
-    public boolean applies(ConfigTestElement configTestElement) {
-        return false;
     }
 
     @Override
@@ -189,6 +227,12 @@ public class KafkaConsumerSampler extends AbstractTestElement
     @SuppressWarnings("unchecked")
     public KafkaConsumer<String, Object> getKafkaConsumer() {
         return (KafkaConsumer<String, Object>) JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName());
+    }
+    private String getKeyDeserializer() {
+        return (String) JMeterContextService.getContext().getVariables().getObject(KafkaConsumerConfig.getKeyDeserializerVariableName());
+    }
+    private String getValueDeserializer() {
+        return (String) JMeterContextService.getContext().getVariables().getObject(KafkaConsumerConfig.getValueDeserializerVariableName());
     }
 
 }

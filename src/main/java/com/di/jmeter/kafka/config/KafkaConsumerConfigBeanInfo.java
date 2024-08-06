@@ -53,7 +53,7 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
 
         createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaConsumerClientVariableName"});
         //Connection configs
-        createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "groupId", "topic", "deSerializerKey", "deSerializerValue", "numberOfMsgToPoll", "autoCommit"});
+        createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "groupId", "topic", "deserializerKey", "deserializerValue", "numberOfMsgToPoll", "autoCommit"});
         //Security configs
         createPropertyGroup("Security", new String[] {SECURITYTYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
         //Additional configs
@@ -83,13 +83,13 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         connectionConfigPropDesc.setDisplayName("Topic");
         connectionConfigPropDesc.setShortDescription("Kafka Topic for the Consumer to subscribe");
 
-        connectionConfigPropDesc =  property("deSerializerKey");
+        connectionConfigPropDesc =  property("deserializerKey");
         connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
         connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
         connectionConfigPropDesc.setDisplayName("Deserializer Key");
         connectionConfigPropDesc.setShortDescription("Deserializer class for key");
 
-        connectionConfigPropDesc =  property("deSerializerValue");
+        connectionConfigPropDesc =  property("deserializerValue");
         connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
         connectionConfigPropDesc.setValue(DEFAULT, "org.apache.kafka.common.serialization.StringDeserializer");
         connectionConfigPropDesc.setDisplayName("Deserializer Value");
@@ -162,7 +162,7 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         }
     }
     public static int getSecurityTypeAsInt(String mode) {
-        if (mode == null || mode.length() == 0) {
+        if (mode == null || mode.isEmpty()) {
             return PLAINTEXT;
         }
         for (int i = 0; i < SECURITYTYPE_TAGS.length; i++) {

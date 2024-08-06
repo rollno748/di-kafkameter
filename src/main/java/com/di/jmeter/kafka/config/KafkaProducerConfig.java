@@ -58,7 +58,6 @@ public class KafkaProducerConfig<K, V> extends ConfigTestElement
 
 	@Override
 	public void addConfigElement(ConfigElement config) {
-
 	}
 
     @Override

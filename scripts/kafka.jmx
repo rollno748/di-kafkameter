@@ -46,8 +46,8 @@
         <stringProp name="kafkaSslTruststore"></stringProp>
         <stringProp name="kafkaSslTruststorePassword">Chang3M3</stringProp>
         <stringProp name="securityType">securityType.sasl_plaintext</stringProp>
-        <stringProp name="serializerKey">org.apache.kafka.common.serialization.StringSerializer</stringProp>
-        <stringProp name="serializerValue">org.apache.kafka.common.serialization.StringSerializer</stringProp>
+        <stringProp name="serializerKey">org.apache.kafka.common.serialization.ByteArraySerializer</stringProp>
+        <stringProp name="serializerValue">org.apache.kafka.common.serialization.ByteArraySerializer</stringProp>
       </com.di.jmeter.kafka.config.KafkaProducerConfig>
       <hashTree/>
       <com.di.jmeter.kafka.config.KafkaConsumerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaConsumerConfig" testname="Kafka Consumer Client" enabled="false">
@@ -79,9 +79,11 @@
         <stringProp name="topic">inbound</stringProp>
         <stringProp name="numberOfMsgToPoll">1</stringProp>
         <boolProp name="autoCommit">true</boolProp>
+        <stringProp name="deserializerKey">org.apache.kafka.common.serialization.ByteArrayDeserializer</stringProp>
+        <stringProp name="deserializerValue">org.apache.kafka.common.serialization.ByteArrayDeserializer</stringProp>
       </com.di.jmeter.kafka.config.KafkaConsumerConfig>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Producer" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Producer">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -92,7 +94,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler" enabled="true">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler">
           <stringProp name="kafkaMessage">{&quot;Message&quot;: &quot;It&apos;s a Send from DI Kafka JMeter Sampler 1.3!&quot;, &quot;time&quot;: &quot;${__timeShift(,,,,)}&quot;}</stringProp>
           <stringProp name="kafkaMessageKey">jmeter-key1</stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -131,7 +133,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaConsumerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaConsumerSampler" testname="Consumer Sampler">
+        <com.di.jmeter.kafka.sampler.KafkaConsumerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaConsumerSampler" testname="Consumer Sampler" enabled="true">
           <boolProp name="autoCommit">true</boolProp>
           <stringProp name="commitType">Sync</stringProp>
           <stringProp name="kafkaConsumerClientVariableName">Client-1</stringProp>
