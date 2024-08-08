@@ -17,14 +17,16 @@
  */
 package com.di.jmeter.kafka.sampler;
 
-import com.di.jmeter.kafka.config.KafkaConsumerConfig;
 import com.google.common.base.Strings;
+import org.apache.jmeter.config.ConfigTestElement;
+import org.apache.jmeter.engine.util.ConfigMergabilityIndicator;
 import org.apache.jmeter.gui.Searchable;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -43,13 +45,20 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class KafkaConsumerSampler<K, V> extends AbstractTestElement
-        implements Sampler, TestBean, TestStateListener, Serializable, Searchable {
+        implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerSampler.class);
+
+    private static final Set<String> APPLIABLE_CONFIG_CLASSES = new HashSet<>(
+            Collections.singletonList("org.apache.jmeter.config.gui.SimpleConfigGui"));
     private static final long DEFAULT_TIMEOUT = 100L;
     private String kafkaConsumerClientVariableName;
+    private String kafkaConsumerKeyDeserializerVariableName;
+    private String kafkaConsumerValueDeserializerVariableName;
     private String pollTimeout;
     private String commitType;
 
@@ -169,6 +178,12 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         }
     }
 
+    @Override
+    public boolean applies(ConfigTestElement configElement) {
+        String guiClass = configElement.getProperty(TestElement.GUI_CLASS).getStringValue();
+        return APPLIABLE_CONFIG_CLASSES.contains(guiClass);
+    }
+
     private void validateClient() {
         if (this.kafkaConsumer == null && getKafkaConsumer() != null) {
             this.kafkaConsumer = (KafkaConsumer<K, V>) getKafkaConsumer();
@@ -208,6 +223,22 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         this.kafkaConsumerClientVariableName = kafkaConsumerClientVariableName;
     }
 
+    public String getKafkaConsumerKeyDeserializerVariableName() {
+        return kafkaConsumerKeyDeserializerVariableName;
+    }
+
+    public void setKafkaConsumerKeyDeserializerVariableName(String kafkaConsumerKeyDeserializerVariableName) {
+        this.kafkaConsumerKeyDeserializerVariableName = kafkaConsumerKeyDeserializerVariableName;
+    }
+
+    public String getKafkaConsumerValueDeserializerVariableName() {
+        return kafkaConsumerValueDeserializerVariableName;
+    }
+
+    public void setKafkaConsumerValueDeserializerVariableName(String kafkaConsumerValueDeserializerVariableName) {
+        this.kafkaConsumerValueDeserializerVariableName = kafkaConsumerValueDeserializerVariableName;
+    }
+
     public String getPollTimeout() {
         return (Strings.isNullOrEmpty(pollTimeout)) ? pollTimeout : String.valueOf(DEFAULT_TIMEOUT);
     }
@@ -229,10 +260,9 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         return (KafkaConsumer<String, Object>) JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerClientVariableName());
     }
     private String getKeyDeserializer() {
-        return (String) JMeterContextService.getContext().getVariables().getObject(KafkaConsumerConfig.getKeyDeserializerVariableName());
+        return (String) JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerKeyDeserializerVariableName());
     }
     private String getValueDeserializer() {
-        return (String) JMeterContextService.getContext().getVariables().getObject(KafkaConsumerConfig.getValueDeserializerVariableName());
+        return (String) JMeterContextService.getContext().getVariables().getObject(getKafkaConsumerValueDeserializerVariableName());
     }
-
 }

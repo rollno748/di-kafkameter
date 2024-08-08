@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerConfigBeanInfo.class);
 
-    private static final String SECURITYTYPE= "securityType";
-    private static final String[] SECURITYTYPE_TAGS = new String[4];
+    private static final String SECURITY_TYPE= "securityType";
+    private static final String[] SECURITY_TYPE_TAGS = new String[4];
     static final int PLAINTEXT = 0;
     static final int SSL = 1;
     static final int SASL_PLAINTEXT = 2;
@@ -42,10 +42,10 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
     private static final String KAFKA_CONFIG_VALUE = "Config value";
 
     static {
-        SECURITYTYPE_TAGS[PLAINTEXT] = "securityType.plaintext";
-        SECURITYTYPE_TAGS[SSL] = "securityType.ssl";
-        SECURITYTYPE_TAGS[SASL_PLAINTEXT] = "securityType.sasl_plaintext";
-        SECURITYTYPE_TAGS[SASL_SSL] = "securityType.sasl_ssl";
+        SECURITY_TYPE_TAGS[PLAINTEXT] = "securityType.plaintext";
+        SECURITY_TYPE_TAGS[SSL] = "securityType.ssl";
+        SECURITY_TYPE_TAGS[SASL_PLAINTEXT] = "securityType.sasl_plaintext";
+        SECURITY_TYPE_TAGS[SASL_SSL] = "securityType.sasl_ssl";
     }
 
     public KafkaConsumerConfigBeanInfo() {
@@ -55,7 +55,7 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         //Connection configs
         createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "groupId", "topic", "deserializerKey", "deserializerValue", "numberOfMsgToPoll", "autoCommit"});
         //Security configs
-        createPropertyGroup("Security", new String[] {SECURITYTYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
+        createPropertyGroup("Security", new String[] {SECURITY_TYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
         //Additional configs
         createPropertyGroup("Additional Configs", new String[] {"extraConfigs"});
 
@@ -107,13 +107,13 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         connectionConfigPropDesc.setDisplayName("Auto Commit");
         connectionConfigPropDesc.setShortDescription("Commit offsets returned on the last poll() for all the subscribed list of topics and partitions");
 
-        PropertyDescriptor securityDescriptor =  property(SECURITYTYPE, TypeEditor.ComboStringEditor);
+        PropertyDescriptor securityDescriptor =  property(SECURITY_TYPE, TypeEditor.ComboStringEditor);
         securityDescriptor.setValue(RESOURCE_BUNDLE, getBeanDescriptor().getValue(RESOURCE_BUNDLE));
         securityDescriptor.setValue(NOT_UNDEFINED, Boolean.TRUE);
-        securityDescriptor.setValue(DEFAULT, SECURITYTYPE_TAGS[PLAINTEXT]);
+        securityDescriptor.setValue(DEFAULT, SECURITY_TYPE_TAGS[PLAINTEXT]);
         securityDescriptor.setValue(NOT_OTHER, Boolean.FALSE);
         securityDescriptor.setValue(NOT_EXPRESSION, Boolean.FALSE);
-        securityDescriptor.setValue(TAGS, SECURITYTYPE_TAGS);
+        securityDescriptor.setValue(TAGS, SECURITY_TYPE_TAGS);
         securityDescriptor.setDisplayName("Type");
         securityDescriptor.setShortDescription("Select the security type");
 
@@ -165,16 +165,16 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         if (mode == null || mode.isEmpty()) {
             return PLAINTEXT;
         }
-        for (int i = 0; i < SECURITYTYPE_TAGS.length; i++) {
-            if (SECURITYTYPE_TAGS[i].equals(mode)) {
+        for (int i = 0; i < SECURITY_TYPE_TAGS.length; i++) {
+            if (SECURITY_TYPE_TAGS[i].equals(mode)) {
                 return i;
             }
         }
         return -1;
     }
     public static String[] getSecurityTypeTags() {
-        String[] copy = new String[SECURITYTYPE_TAGS.length];
-        System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
+        String[] copy = new String[SECURITY_TYPE_TAGS.length];
+        System.arraycopy(SECURITY_TYPE_TAGS, 0, copy, 0, SECURITY_TYPE_TAGS.length);
         return copy;
     }
 }

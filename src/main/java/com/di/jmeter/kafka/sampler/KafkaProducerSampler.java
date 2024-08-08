@@ -17,7 +17,6 @@
  */
 package com.di.jmeter.kafka.sampler;
 
-import com.di.jmeter.kafka.config.KafkaProducerConfig;
 import com.di.jmeter.kafka.utils.VariableSettings;
 import com.google.common.base.Strings;
 import org.apache.jmeter.config.ConfigTestElement;
@@ -57,6 +56,8 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
             Collections.singletonList("org.apache.jmeter.config.gui.SimpleConfigGui"));
 
 	private String kafkaProducerClientVariableName;
+	private String kafkaProducerKeySerializerVariableName;
+	private String kafkaProducerValueSerializerVariableName;
 	private String kafkaTopic;
 	private String partitionString;
 	private String kafkaMessageKey;
@@ -152,11 +153,6 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T> Serializer<T> createSerializer(String serializerClass) throws ReflectiveOperationException {
-		return (Serializer<T>) Class.forName(serializerClass).getDeclaredConstructor().newInstance();
-	}
-
 	private <K, V> ProducerRecord<K, V> createProducerRecord(K key, V value) {
 		if (Strings.isNullOrEmpty(getPartitionString())) {
 			return new ProducerRecord<>(getKafkaTopic(), key, value);
@@ -211,6 +207,22 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 
 	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
 
+	public String getKafkaProducerKeySerializerVariableName() {
+		return kafkaProducerKeySerializerVariableName;
+	}
+
+	public void setKafkaProducerKeySerializerVariableName(String kafkaProducerKeySerializerVariableName) {
+		this.kafkaProducerKeySerializerVariableName = kafkaProducerKeySerializerVariableName;
+	}
+
+	public String getKafkaProducerValueSerializerVariableName() {
+		return kafkaProducerValueSerializerVariableName;
+	}
+
+	public void setKafkaProducerValueSerializerVariableName(String kafkaProducerValueSerializerVariableName) {
+		this.kafkaProducerValueSerializerVariableName = kafkaProducerValueSerializerVariableName;
+	}
+
 	public String getKafkaTopic() {
 		return kafkaTopic;
 	}
@@ -256,10 +268,10 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 		return (KafkaProducer<K, V>) JMeterContextService.getContext().getVariables().getObject(getKafkaProducerClientVariableName());
 	}
 	private String getKeySerializer() {
-		return (String) JMeterContextService.getContext().getVariables().getObject(KafkaProducerConfig.getKeySerializerVariableName());
+		return (String) JMeterContextService.getContext().getVariables().getObject(getKafkaProducerKeySerializerVariableName());
 	}
 	private String getValueSerializer() {
-		return (String) JMeterContextService.getContext().getVariables().getObject(KafkaProducerConfig.getValueSerializerVariableName());
+		return (String) JMeterContextService.getContext().getVariables().getObject(getKafkaProducerValueSerializerVariableName());
 	}
 
 }

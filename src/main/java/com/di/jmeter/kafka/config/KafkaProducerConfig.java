@@ -42,8 +42,8 @@ public class KafkaProducerConfig<K, V> extends ConfigTestElement
 	private KafkaProducer<K, V> kafkaProducer;
 	private List<VariableSettings> extraConfigs;
 	private String kafkaProducerClientVariableName;
-	private static String keySerializerVariableName;
-	private static String valueSerializerVariableName;
+	private static String kafkaProducerKeySerializerVariableName;
+	private static String kafkaProducerValueSerializerVariableName;
 	private String kafkaBrokers;
 	private String batchSize; // default: 16384
 	private String clientId;
@@ -75,8 +75,8 @@ public class KafkaProducerConfig<K, V> extends ConfigTestElement
 					Serializer<V> valueSerializer = createSerializer(getSerializerValue());
 					kafkaProducer = new KafkaProducer<>(getProps(), keySerializer, valueSerializer);
 					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
-					variables.putObject(keySerializerVariableName, getSerializerKey());
-					variables.putObject(valueSerializerVariableName, getSerializerValue());
+					variables.putObject(kafkaProducerKeySerializerVariableName, getSerializerKey());
+					variables.putObject(kafkaProducerValueSerializerVariableName, getSerializerValue());
 
 					LOGGER.info("Kafka Producer client successfully Initialized");
 				} catch (Exception e) {
@@ -147,24 +147,20 @@ public class KafkaProducerConfig<K, V> extends ConfigTestElement
 		return kafkaProducer;
 	}
 
-	public String getKafkaProducerClientVariableName() { return kafkaProducerClientVariableName; }
-
-	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
-
-	public static String getKeySerializerVariableName() {
-		return keySerializerVariableName;
+	public static String getKafkaProducerKeySerializerVariableName() {
+		return kafkaProducerKeySerializerVariableName;
 	}
 
-	public void setKeySerializerVariableName(String keySerializerVariableName) {
-		KafkaProducerConfig.keySerializerVariableName = keySerializerVariableName;
+	public void setKafkaProducerKeySerializerVariableName(String kafkaProducerKeySerializerVariableName) {
+		KafkaProducerConfig.kafkaProducerKeySerializerVariableName = kafkaProducerKeySerializerVariableName;
 	}
 
-	public static String getValueSerializerVariableName() {
-		return valueSerializerVariableName;
+	public static String getKafkaProducerValueSerializerVariableName() {
+		return kafkaProducerValueSerializerVariableName;
 	}
 
-	public void setValueSerializerVariableName(String valueSerializerVariableName) {
-		KafkaProducerConfig.valueSerializerVariableName = valueSerializerVariableName;
+	public void setKafkaProducerValueSerializerVariableName(String kafkaProducerValueSerializerVariableName) {
+		KafkaProducerConfig.kafkaProducerValueSerializerVariableName = kafkaProducerValueSerializerVariableName;
 	}
 
 	public String getKafkaBrokers() {
@@ -262,5 +258,9 @@ public class KafkaProducerConfig<K, V> extends ConfigTestElement
 	public void setSerializerValue(String serializerValue) {
 		this.serializerValue = serializerValue;
 	}
+
+	public String getKafkaProducerClientVariableName() { return kafkaProducerClientVariableName; }
+
+	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
 
 }

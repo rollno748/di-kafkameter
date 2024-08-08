@@ -8,7 +8,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="pKafkaBrokers" elementType="Argument">
             <stringProp name="Argument.name">pKafkaBrokers</stringProp>
-            <stringProp name="Argument.value">${__P(kafka.brokers,18.133.44.133:9092\,3.9.71.176:9092\,52.56.121.60:9092)}</stringProp>
+            <stringProp name="Argument.value">${__P(kafka.brokers,35.189.109.40:9092\,34.142.45.51:9092\,35.197.253.244:9092)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="pUsername" elementType="Argument">
@@ -18,11 +18,13 @@
           </elementProp>
           <elementProp name="pPassword" elementType="Argument">
             <stringProp name="Argument.name">pPassword</stringProp>
-            <stringProp name="Argument.value">${__P(password,d33f9e50472c5426c41a13d793edb0c938d7f4814d5d1e1d7772fc1fb5a12596)}</stringProp>
+            <stringProp name="Argument.value">${__P(password,e59d2cb04c75cef4f0baadb5ee7fec877f666e43724e61365d0b8e69f5d97df7)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <com.di.jmeter.kafka.config.KafkaProducerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaProducerConfig" testname="Kafka Producer Config">
@@ -50,7 +52,7 @@
         <stringProp name="serializerValue">org.apache.kafka.common.serialization.ByteArraySerializer</stringProp>
       </com.di.jmeter.kafka.config.KafkaProducerConfig>
       <hashTree/>
-      <com.di.jmeter.kafka.config.KafkaConsumerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaConsumerConfig" testname="Kafka Consumer Client" enabled="false">
+      <com.di.jmeter.kafka.config.KafkaConsumerConfig guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.config.KafkaConsumerConfig" testname="Kafka Consumer Client" enabled="true">
         <stringProp name="deSerializerKey">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
         <stringProp name="deSerializerValue">org.apache.kafka.common.serialization.StringDeserializer</stringProp>
         <collectionProp name="extraConfigs">
@@ -67,23 +69,23 @@
             <stringProp name="configValue">earliest</stringProp>
           </elementProp>
         </collectionProp>
-        <stringProp name="groupId">my-consumer-client1</stringProp>
+        <stringProp name="groupId">my-consumer-client-001</stringProp>
         <stringProp name="kafkaBrokers">${pKafkaBrokers}</stringProp>
-        <stringProp name="kafkaConsumerClientVariableName">Client-1</stringProp>
+        <stringProp name="kafkaConsumerClientVariableName">consumer-client</stringProp>
         <stringProp name="kafkaSslKeystore"></stringProp>
         <stringProp name="kafkaSslKeystorePassword">Chang3M3</stringProp>
         <stringProp name="kafkaSslPrivateKeyPass">Chang3M3</stringProp>
         <stringProp name="kafkaSslTruststore"></stringProp>
         <stringProp name="kafkaSslTruststorePassword">Chang3M3</stringProp>
         <stringProp name="securityType">securityType.sasl_plaintext</stringProp>
-        <stringProp name="topic">inbound</stringProp>
+        <stringProp name="topic">kafkameter</stringProp>
         <stringProp name="numberOfMsgToPoll">1</stringProp>
         <boolProp name="autoCommit">true</boolProp>
         <stringProp name="deserializerKey">org.apache.kafka.common.serialization.ByteArrayDeserializer</stringProp>
         <stringProp name="deserializerValue">org.apache.kafka.common.serialization.ByteArrayDeserializer</stringProp>
       </com.di.jmeter.kafka.config.KafkaConsumerConfig>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Producer">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Producer" enabled="true">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -94,7 +96,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler">
+        <com.di.jmeter.kafka.sampler.KafkaProducerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaProducerSampler" testname="Kafka Producer Sampler" enabled="true">
           <stringProp name="kafkaMessage">{&quot;Message&quot;: &quot;It&apos;s a Send from DI Kafka JMeter Sampler 1.3!&quot;, &quot;time&quot;: &quot;${__timeShift(,,,,)}&quot;}</stringProp>
           <stringProp name="kafkaMessageKey">jmeter-key1</stringProp>
           <stringProp name="kafkaProducerClientVariableName">KafkaProducerClient</stringProp>
@@ -125,7 +127,6 @@
         <longProp name="ThreadGroup.duration">10</longProp>
         <longProp name="ThreadGroup.delay">10</longProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
           <stringProp name="LoopController.loops">1</stringProp>
@@ -136,8 +137,8 @@
         <com.di.jmeter.kafka.sampler.KafkaConsumerSampler guiclass="TestBeanGUI" testclass="com.di.jmeter.kafka.sampler.KafkaConsumerSampler" testname="Consumer Sampler" enabled="true">
           <boolProp name="autoCommit">true</boolProp>
           <stringProp name="commitType">Sync</stringProp>
-          <stringProp name="kafkaConsumerClientVariableName">Client-1</stringProp>
-          <stringProp name="pollTimeout">6000</stringProp>
+          <stringProp name="kafkaConsumerClientVariableName">consumer-client</stringProp>
+          <stringProp name="pollTimeout">60000</stringProp>
           <stringProp name="TestPlan.comments">${__threadNum}</stringProp>
         </com.di.jmeter.kafka.sampler.KafkaConsumerSampler>
         <hashTree>
@@ -151,7 +152,7 @@
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>

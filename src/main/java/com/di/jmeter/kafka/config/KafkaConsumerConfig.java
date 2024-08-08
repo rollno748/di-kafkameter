@@ -42,8 +42,8 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
     private KafkaConsumer<K, V> kafkaConsumer;
     private List<VariableSettings> extraConfigs;
     private String kafkaConsumerClientVariableName;
-    private static String keyDeserializerVariableName;
-    private static String valueDeserializerVariableName;
+    private static String kafkaConsumerKeyDeserializerVariableName;
+    private static String kafkaConsumerValueDeserializerVariableName;
     private String kafkaBrokers;
     private String groupId;
     private String topic;
@@ -78,8 +78,8 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
                     kafkaConsumer = new KafkaConsumer<>(getProps(), keyDeserializer, valueDeserializer);
                     kafkaConsumer.subscribe(Collections.singletonList(getTopic()));
                     variables.putObject(kafkaConsumerClientVariableName, kafkaConsumer);
-                    variables.putObject(keyDeserializerVariableName, getDeserializerKey());
-                    variables.putObject(valueDeserializerVariableName, getDeserializerValue());
+                    variables.putObject(kafkaConsumerKeyDeserializerVariableName, getDeserializerKey());
+                    variables.putObject(kafkaConsumerValueDeserializerVariableName, getDeserializerValue());
                     LOGGER.info("Kafka consumer client successfully Initialized");
                 } catch (Exception e) {
                     LOGGER.error("Error establishing kafka consumer client!", e);
@@ -133,8 +133,10 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
 
     @Override
     public void testEnded() {
-        kafkaConsumer.close();
-        LOGGER.info("Kafka consumer client connection terminated");
+        if(kafkaConsumer != null){
+            kafkaConsumer.close();
+            LOGGER.info("Kafka consumer client connection terminated");
+        }
     }
 
     @Override
@@ -147,24 +149,17 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
         return kafkaConsumer;
     }
 
-    public String getKafkaConsumerClientVariableName() {
-        return kafkaConsumerClientVariableName;
+    public static String getKafkaConsumerKeyDeserializerVariableName() {
+        return kafkaConsumerKeyDeserializerVariableName;
     }
-
-    public void setKafkaConsumerClientVariableName(String kafkaConsumerClientVariableName) {
-        this.kafkaConsumerClientVariableName = kafkaConsumerClientVariableName;
+    public static void setKafkaConsumerKeyDeserializerVariableName(String kafkaConsumerKeyDeserializerVariableName) {
+        KafkaConsumerConfig.kafkaConsumerKeyDeserializerVariableName = kafkaConsumerKeyDeserializerVariableName;
     }
-    public static String getKeyDeserializerVariableName() {
-        return keyDeserializerVariableName;
+    public static String getKafkaConsumerValueDeserializerVariableName() {
+        return kafkaConsumerValueDeserializerVariableName;
     }
-    public static void setKeyDeserializerVariableName(String keyDeserializerVariableName) {
-        KafkaConsumerConfig.keyDeserializerVariableName = keyDeserializerVariableName;
-    }
-    public static String getValueDeserializerVariableName() {
-        return valueDeserializerVariableName;
-    }
-    public static void setValueDeserializerVariableName(String valueDeserializerVariableName) {
-        KafkaConsumerConfig.valueDeserializerVariableName = valueDeserializerVariableName;
+    public static void setKafkaConsumerValueDeserializerVariableName(String kafkaConsumerValueDeserializerVariableName) {
+        KafkaConsumerConfig.kafkaConsumerValueDeserializerVariableName = kafkaConsumerValueDeserializerVariableName;
     }
     public String getKafkaBrokers() {
         return kafkaBrokers;
@@ -275,5 +270,13 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
 
     public void setDeserializerValue(String deserializerValue) {
         this.deserializerValue = deserializerValue;
+    }
+
+    public String getKafkaConsumerClientVariableName() {
+        return kafkaConsumerClientVariableName;
+    }
+
+    public void setKafkaConsumerClientVariableName(String kafkaConsumerClientVariableName) {
+        this.kafkaConsumerClientVariableName = kafkaConsumerClientVariableName;
     }
 }
