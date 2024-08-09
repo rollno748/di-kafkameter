@@ -1,0 +1,319 @@
+2024-08-09 01:18:57,289 INFO o.a.j.u.JMeterUtils: Setting Locale to en_US
+2024-08-09 01:18:57,327 INFO o.a.j.JMeter: Loading user properties from: C:\Installers\apache-jmeter\apache-jmeter-5.6.3\bin\user.properties
+2024-08-09 01:18:57,327 INFO o.a.j.JMeter: Loading system properties from: C:\Installers\apache-jmeter\apache-jmeter-5.6.3\bin\system.properties
+2024-08-09 01:18:57,338 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
+2024-08-09 01:18:57,338 INFO o.a.j.JMeter: Version 5.6.3
+2024-08-09 01:18:57,338 INFO o.a.j.JMeter: java.version=17.0.10
+2024-08-09 01:18:57,338 INFO o.a.j.JMeter: java.vm.name=Java HotSpot(TM) 64-Bit Server VM
+2024-08-09 01:18:57,338 INFO o.a.j.JMeter: os.name=Windows 11
+2024-08-09 01:18:57,338 INFO o.a.j.JMeter: os.arch=amd64
+2024-08-09 01:18:57,338 INFO o.a.j.JMeter: os.version=10.0
+2024-08-09 01:18:57,339 INFO o.a.j.JMeter: file.encoding=Cp1252
+2024-08-09 01:18:57,339 INFO o.a.j.JMeter: java.awt.headless=null
+2024-08-09 01:18:57,339 INFO o.a.j.JMeter: Max memory     =4087349248
+2024-08-09 01:18:57,339 INFO o.a.j.JMeter: Available Processors =8
+2024-08-09 01:18:57,350 INFO o.a.j.JMeter: Default Locale=English (United States)
+2024-08-09 01:18:57,351 INFO o.a.j.JMeter: JMeter  Locale=English (United States)
+2024-08-09 01:18:57,351 INFO o.a.j.JMeter: JMeterHome=C:\Installers\apache-jmeter\apache-jmeter-5.6.3
+2024-08-09 01:18:57,351 INFO o.a.j.JMeter: user.dir  =C:\ibm\github\java\di-kafkameter\scripts
+2024-08-09 01:18:57,351 INFO o.a.j.JMeter: PWD       =C:\ibm\github\java\di-kafkameter\scripts
+2024-08-09 01:18:57,358 INFO o.a.j.JMeter: IP: 172.27.192.1 Name: Ibrahim-PC FullName: Ibrahim-PC.mshome.net
+2024-08-09 01:18:57,380 INFO o.a.j.JMeter: Loaded icon properties from org/apache/jmeter/images/icon.properties
+2024-08-09 01:18:57,620 INFO o.a.j.JMeterGuiLauncher: Setting LAF to: laf:com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+2024-08-09 01:18:58,823 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.3.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.action.Command], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:18:58,823 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.2.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.action.Command], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:18:58,839 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-manager-1.10.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.action.Command], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:18:58,980 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-dummy-0.4.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.action.Command], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:18:59,058 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.3.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.plugin.MenuCreator], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:18:59,058 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.2.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.plugin.MenuCreator], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:18:59,058 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-manager-1.10.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.plugin.MenuCreator], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:18:59,058 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-dummy-0.4.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.plugin.MenuCreator], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:18:59,153 WARN o.j.r.PluginManager: Found JAR conflict: C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.3.jar and C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.2.jar
+2024-08-09 01:18:59,501 INFO o.j.r.JARSourceHTTP: Found cached repo
+2024-08-09 01:18:59,755 INFO o.j.r.PluginManager: Plugins Status: [di-kafkameter=1.2, jpgc-dummy=0.4, jpgc-plugins-manager=1.10, jmeter-core=5.6.3, jmeter-ftp=5.6.3, jmeter-http=5.6.3, jmeter-jdbc=5.6.3, jmeter-jms=5.6.3, jmeter-junit=5.6.3, jmeter-java=5.6.3, jmeter-ldap=5.6.3, jmeter-mail=5.6.3, jmeter-mongodb=5.6.3, jmeter-native=5.6.3, jmeter-tcp=5.6.3, jmeter-components=5.6.3]
+2024-08-09 01:19:00,695 INFO o.a.j.JMeterGuiLauncher: Loading file: kafka.jmx
+2024-08-09 01:19:00,702 INFO o.a.j.s.FileServer: Default base='C:\ibm\github\java\di-kafkameter\scripts'
+2024-08-09 01:19:00,710 INFO o.a.j.s.FileServer: Set new base='C:\ibm\github\java\di-kafkameter\scripts'
+2024-08-09 01:19:01,091 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2024-08-09 01:19:01,091 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2024-08-09 01:19:01,107 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2024-08-09 01:19:01,107 INFO o.a.j.s.SaveService: Loading file: kafka.jmx
+2024-08-09 01:19:01,378 INFO o.a.j.s.FileServer: Set new base='C:\ibm\github\java\di-kafkameter\scripts'
+2024-08-09 01:19:01,960 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2024-08-09 01:19:01,960 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to UTF-8
+2024-08-09 01:19:01,960 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2024-08-09 01:19:01,960 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2024-08-09 01:19:02,158 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.3.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.ResultRenderer], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:02,158 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.2.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.ResultRenderer], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:02,158 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-manager-1.10.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.ResultRenderer], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:02,158 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-dummy-0.4.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.ResultRenderer], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:02,189 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.3.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.RequestView], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:02,189 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.2.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.RequestView], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:02,189 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-manager-1.10.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.RequestView], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:02,189 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-dummy-0.4.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.RequestView], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:44,525 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2024-08-09 01:19:44,525 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2024-08-09 01:19:44,525 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2024-08-09 01:19:44,525 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2024-08-09 01:19:44,541 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2024-08-09 01:19:44,588 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.3.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:44,588 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\di-kafkameter-1.2.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:44,588 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-manager-1.10.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:44,588 INFO o.a.j.r.ClassFinder: Will scan jar C:\Installers\apache-jmeter\apache-jmeter-5.6.3\lib\ext\jmeter-plugins-dummy-0.4.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-08-09 01:19:44,604 INFO c.d.j.k.c.KafkaProducerConfig: Setting up Additional properties
+2024-08-09 01:19:44,635 INFO o.a.k.c.p.ProducerConfig: ProducerConfig values: 
+	acks = -1
+	auto.include.jmx.reporter = true
+	batch.size = 16384
+	bootstrap.servers = [35.189.109.40:9092, 34.142.45.51:9092, 35.197.253.244:9092]
+	buffer.memory = 33554432
+	client.dns.lookup = use_all_dns_ips
+	client.id = jmeter1
+	compression.type = none
+	connections.max.idle.ms = 540000
+	delivery.timeout.ms = 120000
+	enable.idempotence = true
+	enable.metrics.push = true
+	interceptor.classes = []
+	key.serializer = class org.apache.kafka.common.serialization.StringSerializer
+	linger.ms = 0
+	max.block.ms = 60000
+	max.in.flight.requests.per.connection = 5
+	max.request.size = 1048576
+	metadata.max.age.ms = 300000
+	metadata.max.idle.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partitioner.adaptive.partitioning.enable = true
+	partitioner.availability.timeout.ms = 0
+	partitioner.class = null
+	partitioner.ignore.keys = false
+	receive.buffer.bytes = 32768
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 2147483647
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = [hidden]
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = SCRAM-SHA-256
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = SASL_PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	transaction.timeout.ms = 60000
+	transactional.id = null
+	value.serializer = class org.apache.kafka.common.serialization.StringSerializer
+
+2024-08-09 01:19:44,698 INFO o.a.k.c.t.i.KafkaMetricsCollector: initializing Kafka metrics collector
+2024-08-09 01:19:44,744 INFO o.a.k.c.p.KafkaProducer: [Producer clientId=jmeter1] Instantiated an idempotent producer.
+2024-08-09 01:19:44,822 INFO o.a.k.c.s.a.AbstractLogin: Successfully logged in.
+2024-08-09 01:19:44,892 INFO o.a.k.c.u.AppInfoParser: Kafka version: 3.7.1
+2024-08-09 01:19:44,892 INFO o.a.k.c.u.AppInfoParser: Kafka commitId: e2494e6ffb89f828
+2024-08-09 01:19:44,892 INFO o.a.k.c.u.AppInfoParser: Kafka startTimeMs: 1723162784885
+2024-08-09 01:19:44,895 INFO c.d.j.k.c.KafkaProducerConfig: Kafka Producer client successfully Initialized
+2024-08-09 01:19:44,907 INFO c.d.j.k.c.KafkaConsumerConfig: Setting up Additional properties
+2024-08-09 01:19:44,927 INFO o.a.k.c.c.ConsumerConfig: ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = earliest
+	bootstrap.servers = [35.189.109.40:9092, 34.142.45.51:9092, 35.197.253.244:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-my-consumer-client-001-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = true
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = my-consumer-client-001
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 10
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = [hidden]
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = SCRAM-SHA-256
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = SASL_PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+
+2024-08-09 01:19:44,956 INFO o.a.k.c.t.i.KafkaMetricsCollector: initializing Kafka metrics collector
+2024-08-09 01:19:45,089 INFO o.a.k.c.u.AppInfoParser: Kafka version: 3.7.1
+2024-08-09 01:19:45,089 INFO o.a.k.c.u.AppInfoParser: Kafka commitId: e2494e6ffb89f828
+2024-08-09 01:19:45,089 INFO o.a.k.c.u.AppInfoParser: Kafka startTimeMs: 1723162785089
+2024-08-09 01:19:45,101 INFO o.a.k.c.c.i.LegacyKafkaConsumer: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Subscribed to topic(s): kafkameter
+2024-08-09 01:19:45,101 INFO c.d.j.k.c.KafkaConsumerConfig: Kafka consumer client successfully Initialized
+2024-08-09 01:19:45,114 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2024-08-09 01:19:45,170 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : Producer
+2024-08-09 01:19:45,170 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group Producer.
+2024-08-09 01:19:45,170 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2024-08-09 01:19:45,170 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=1 delayedStart=false
+2024-08-09 01:19:45,187 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2024-08-09 01:19:45,187 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : Consumer
+2024-08-09 01:19:45,187 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group Consumer.
+2024-08-09 01:19:45,187 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2024-08-09 01:19:45,187 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=1 delayedStart=false
+2024-08-09 01:19:45,187 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2024-08-09 01:19:45,187 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2024-08-09 01:19:45,187 INFO o.a.j.t.JMeterThread: Thread started: Consumer 2-1
+2024-08-09 01:19:45,187 INFO o.a.j.t.JMeterThread: Thread started: Producer 1-1
+2024-08-09 01:19:46,160 INFO o.a.k.c.Metadata: [Producer clientId=jmeter1] Cluster ID: QSg1Cy2WSt2pMMDZQGO7rA
+2024-08-09 01:19:46,162 INFO o.a.k.c.p.i.TransactionManager: [Producer clientId=jmeter1] ProducerId set to 3007 with epoch 0
+2024-08-09 01:19:46,265 INFO o.a.k.c.Metadata: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Cluster ID: QSg1Cy2WSt2pMMDZQGO7rA
+2024-08-09 01:19:46,267 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Discovered group coordinator 35.189.109.40:9092 (id: 2147483644 rack: null)
+2024-08-09 01:19:46,283 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] (Re-)joining group
+2024-08-09 01:19:46,548 INFO o.a.j.t.JMeterThread: Thread is done: Producer 1-1
+2024-08-09 01:19:46,548 INFO o.a.j.t.JMeterThread: Thread finished: Producer 1-1
+2024-08-09 01:19:46,598 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Request joining group due to: need to re-join with the given member-id: consumer-my-consumer-client-001-1-d065a933-d22f-46a8-9e5e-dc0af9917e35
+2024-08-09 01:19:46,599 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] (Re-)joining group
+2024-08-09 01:19:49,696 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Successfully joined group with generation Generation{generationId=13, memberId='consumer-my-consumer-client-001-1-d065a933-d22f-46a8-9e5e-dc0af9917e35', protocol='range'}
+2024-08-09 01:19:49,715 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Finished assignment for group at generation 13: {consumer-my-consumer-client-001-1-d065a933-d22f-46a8-9e5e-dc0af9917e35=Assignment(partitions=[kafkameter-0, kafkameter-1, kafkameter-2])}
+2024-08-09 01:19:49,798 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Successfully synced group in generation Generation{generationId=13, memberId='consumer-my-consumer-client-001-1-d065a933-d22f-46a8-9e5e-dc0af9917e35', protocol='range'}
+2024-08-09 01:19:49,799 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Notifying assignor about the new Assignment(partitions=[kafkameter-0, kafkameter-1, kafkameter-2])
+2024-08-09 01:19:49,802 INFO o.a.k.c.c.i.ConsumerRebalanceListenerInvoker: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Adding newly assigned partitions: kafkameter-0, kafkameter-1, kafkameter-2
+2024-08-09 01:19:49,906 INFO o.a.k.c.c.i.ConsumerUtils: Setting offset for partition kafkameter-0 to the committed offset FetchPosition{offset=3, offsetEpoch=Optional[0], currentLeader=LeaderAndEpoch{leader=Optional[35.197.253.244:9092 (id: 1 rack: europe-west2-c)], epoch=2}}
+2024-08-09 01:19:49,907 INFO o.a.k.c.c.i.ConsumerUtils: Setting offset for partition kafkameter-2 to the committed offset FetchPosition{offset=11, offsetEpoch=Optional[2], currentLeader=LeaderAndEpoch{leader=Optional[34.142.45.51:9092 (id: 2 rack: europe-west2-b)], epoch=2}}
+2024-08-09 01:19:49,907 INFO o.a.k.c.c.i.ConsumerUtils: Setting offset for partition kafkameter-1 to the committed offset FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[35.189.109.40:9092 (id: 3 rack: europe-west2-a)], epoch=2}}
+2024-08-09 01:19:50,787 INFO o.a.j.t.JMeterThread: Thread is done: Consumer 2-1
+2024-08-09 01:19:50,787 INFO o.a.j.t.JMeterThread: Thread finished: Consumer 2-1
+2024-08-09 01:19:50,787 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2024-08-09 01:19:50,790 INFO o.a.k.c.p.KafkaProducer: [Producer clientId=jmeter1] Closing the Kafka producer with timeoutMillis = 9223372036854775807 ms.
+2024-08-09 01:19:50,808 INFO o.a.k.c.m.Metrics: Metrics scheduler closed
+2024-08-09 01:19:50,809 INFO o.a.k.c.m.Metrics: Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2024-08-09 01:19:50,809 INFO o.a.k.c.m.Metrics: Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2024-08-09 01:19:50,809 INFO o.a.k.c.m.Metrics: Metrics reporters closed
+2024-08-09 01:19:50,810 INFO o.a.k.c.u.AppInfoParser: App info kafka.producer for jmeter1 unregistered
+2024-08-09 01:19:50,810 INFO c.d.j.k.c.KafkaProducerConfig: Kafka Producer client connection terminated
+2024-08-09 01:19:50,927 INFO o.a.k.c.c.i.ConsumerRebalanceListenerInvoker: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Revoke previously assigned partitions kafkameter-0, kafkameter-1, kafkameter-2
+2024-08-09 01:19:50,928 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Member consumer-my-consumer-client-001-1-d065a933-d22f-46a8-9e5e-dc0af9917e35 sending LeaveGroup request to coordinator 35.189.109.40:9092 (id: 2147483644 rack: null) due to the consumer is being closed
+2024-08-09 01:19:50,930 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Resetting generation and member id due to: consumer pro-actively leaving the group
+2024-08-09 01:19:50,930 INFO o.a.k.c.c.i.ConsumerCoordinator: [Consumer clientId=consumer-my-consumer-client-001-1, groupId=my-consumer-client-001] Request joining group due to: consumer pro-actively leaving the group
+2024-08-09 01:19:51,028 INFO o.a.k.c.m.Metrics: Metrics scheduler closed
+2024-08-09 01:19:51,029 INFO o.a.k.c.m.Metrics: Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2024-08-09 01:19:51,029 INFO o.a.k.c.m.Metrics: Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2024-08-09 01:19:51,029 INFO o.a.k.c.m.Metrics: Metrics reporters closed
+2024-08-09 01:19:51,039 INFO o.a.k.c.u.AppInfoParser: App info kafka.consumer for consumer-my-consumer-client-001-1 unregistered
+2024-08-09 01:19:51,039 INFO c.d.j.k.c.KafkaConsumerConfig: Kafka consumer client connection terminated
+2024-08-09 01:19:51,040 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)

@@ -52,7 +52,7 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 	public KafkaProducerConfigBeanInfo() {
 		super(KafkaProducerConfig.class);
 
-		createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"kafkaProducerClientVariableName"});
+		createPropertyGroup("Variable Name bound to Kafka Client", new String[] {"producerClientVariableName"});
 		//Connection configs
 		createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "batchSize", "clientId", "serializerKey", "serializerValue"});
 		//Security configs
@@ -60,11 +60,11 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		//Additional configs
 		createPropertyGroup("Additional Configs", new String[] {"extraConfigs"});
 
-		PropertyDescriptor kafkaProducerClientVariableNamePropDesc =  property("kafkaProducerClientVariableName");
-		kafkaProducerClientVariableNamePropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		kafkaProducerClientVariableNamePropDesc.setValue(DEFAULT, "KafkaProducerClient");
-		kafkaProducerClientVariableNamePropDesc.setDisplayName("Variable Name");
-		kafkaProducerClientVariableNamePropDesc.setShortDescription("Variable Name to use in KafkaProducerSampler");
+		PropertyDescriptor producerClientVariableNamePropDesc =  property("producerClientVariableName");
+		producerClientVariableNamePropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
+		producerClientVariableNamePropDesc.setValue(DEFAULT, "KafkaProducerClient");
+		producerClientVariableNamePropDesc.setDisplayName("Variable Name");
+		producerClientVariableNamePropDesc.setShortDescription("Variable Name to use in KafkaProducerSampler");
 
 		PropertyDescriptor connectionConfigPropDesc =  property("kafkaBrokers");
 		connectionConfigPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);

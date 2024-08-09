@@ -26,6 +26,7 @@ import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.Deserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,14 +35,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-public class KafkaConsumerConfig extends ConfigTestElement
+public class KafkaConsumerConfig<K, V> extends ConfigTestElement
         implements ConfigElement, TestBean, TestStateListener, Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerConfig.class);
     private static final long serialVersionUID = 3328926106250797599L;
-
-    private KafkaConsumer<String, Object> kafkaConsumer;
+    private KafkaConsumer<K, V> kafkaConsumer;
+    private static String consumerSerializerKeyVariableName;
+    private static String consumerSerializerValueVariableName;
     private List<VariableSettings> extraConfigs;
-    private String kafkaConsumerClientVariableName;
+    private String consumerClientVariableName;
     private String kafkaBrokers;
     private String groupId;
     private String topic;
@@ -58,11 +60,6 @@ public class KafkaConsumerConfig extends ConfigTestElement
 
     @Override
     public void addConfigElement(ConfigElement config) {
-
-    }
-    @Override
-    public boolean expectsModification() {
-        return false;
     }
 
     @Override
@@ -71,14 +68,18 @@ public class KafkaConsumerConfig extends ConfigTestElement
         TestBeanHelper.prepare(this);
         JMeterVariables variables = getThreadContext().getVariables();
 
-        if (variables.getObject(kafkaConsumerClientVariableName) != null) {
+        if (variables.getObject(consumerClientVariableName) != null) {
             LOGGER.error("Kafka consumer is already running.");
         } else {
             synchronized (this) {
                 try {
-                    kafkaConsumer = new KafkaConsumer<>(getProps());
+                    Deserializer<K> deserializerKey = createDeserializer(getDeSerializerKey());
+                    Deserializer<V> deserializerValue = createDeserializer(getDeSerializerValue());
+                    kafkaConsumer = new KafkaConsumer<>(getProps(), deserializerKey, deserializerValue);
                     kafkaConsumer.subscribe(Collections.singletonList(getTopic()));
-                    variables.putObject(kafkaConsumerClientVariableName, kafkaConsumer);
+                    variables.putObject(consumerClientVariableName, kafkaConsumer);
+                    variables.putObject(consumerSerializerKeyVariableName, getDeSerializerKey());
+                    variables.putObject(consumerSerializerValueVariableName, getDeSerializerValue());
                     LOGGER.info("Kafka consumer client successfully Initialized");
                 } catch (Exception e) {
                     LOGGER.error("Error establishing kafka consumer client!", e);
@@ -87,18 +88,21 @@ public class KafkaConsumerConfig extends ConfigTestElement
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private <T> Deserializer<T> createDeserializer(String deserializerClass) throws ReflectiveOperationException {
+        return (Deserializer<T>) Class.forName(deserializerClass).getDeclaredConstructor().newInstance();
+    }
+
     private Properties getProps() {
         Properties props = new Properties();
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
         props.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());//groupId
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, getDeSerializerKey());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, getDeSerializerValue());
         props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, isAutoCommit());
 
         LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
-        if (getExtraConfigs().size() >= 1) {
+        if (!getExtraConfigs().isEmpty()) {
             LOGGER.info("Setting up Additional properties");
             for (VariableSettings entry : getExtraConfigs()){
                 props.put(entry.getConfigKey(), entry.getConfigValue());
@@ -137,16 +141,8 @@ public class KafkaConsumerConfig extends ConfigTestElement
     }
 
     // Getters and setters
-    public KafkaConsumer<String, Object> getKafkaConsumer() {
+    public KafkaConsumer<K, V> getKafkaConsumer() {
         return kafkaConsumer;
-    }
-
-    public String getKafkaConsumerClientVariableName() {
-        return kafkaConsumerClientVariableName;
-    }
-
-    public void setKafkaConsumerClientVariableName(String kafkaConsumerClientVariableName) {
-        this.kafkaConsumerClientVariableName = kafkaConsumerClientVariableName;
     }
 
     public String getKafkaBrokers() {
@@ -259,5 +255,29 @@ public class KafkaConsumerConfig extends ConfigTestElement
 
     public void setDeSerializerValue(String deSerializerValue) {
         this.deSerializerValue = deSerializerValue;
+    }
+
+    public String getConsumerClientVariableName() {
+        return consumerClientVariableName;
+    }
+
+    public void setConsumerClientVariableName(String consumerClientVariableName) {
+        this.consumerClientVariableName = consumerClientVariableName;
+    }
+
+    public static String getConsumerSerializerKeyVariableName() {
+        return consumerSerializerKeyVariableName;
+    }
+
+    public static void setConsumerSerializerKeyVariableName(String consumerSerializerKeyVariableName) {
+        KafkaConsumerConfig.consumerSerializerKeyVariableName = consumerSerializerKeyVariableName;
+    }
+
+    public static String getConsumerSerializerValueVariableName() {
+        return consumerSerializerValueVariableName;
+    }
+
+    public static void setConsumerSerializerValueVariableName(String consumerSerializerValueVariableName) {
+        KafkaConsumerConfig.consumerSerializerValueVariableName = consumerSerializerValueVariableName;
     }
 }

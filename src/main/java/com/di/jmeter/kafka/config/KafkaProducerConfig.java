@@ -17,10 +17,7 @@
  */
 package com.di.jmeter.kafka.config;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Properties;
-
+import com.di.jmeter.kafka.utils.VariableSettings;
 import org.apache.jmeter.config.ConfigElement;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.testbeans.TestBean;
@@ -29,22 +26,24 @@ import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.di.jmeter.kafka.utils.VariableSettings;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Properties;
 
-public class KafkaProducerConfig extends ConfigTestElement
+public class KafkaProducerConfig<K, V> extends ConfigTestElement
 		implements ConfigElement, TestBean, TestStateListener, Serializable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfig.class);
 	private static final long serialVersionUID = 3328926106250797599L;
-
-	private KafkaProducer<String, Object> kafkaProducer;
+	private static String producerSerializerKeyVariableName;
+	private static String producerSerializerValueVariableName;
+	private KafkaProducer<K, V> kafkaProducer;
 	private List<VariableSettings> extraConfigs;
-
-	private String kafkaProducerClientVariableName;
-
+	private String producerClientVariableName;
 	private String kafkaBrokers;
 	private String batchSize; // default: 16384
 	private String clientId;
@@ -59,27 +58,25 @@ public class KafkaProducerConfig extends ConfigTestElement
 
 	@Override
 	public void addConfigElement(ConfigElement config) {
-
 	}
 
-	@Override
-	public boolean expectsModification() {
-		return false;
-	}
-
-	@Override
+    @Override
 	public void testStarted() {
 		this.setRunningVersion(true);
 		TestBeanHelper.prepare(this);
 		JMeterVariables variables = getThreadContext().getVariables();
 
-		if (variables.getObject(kafkaProducerClientVariableName) != null) {
+		if (variables.getObject(producerClientVariableName) != null) {
 			LOGGER.error("Kafka Client is already running.");
 		} else {
 			synchronized (this) {
 				try {
-					kafkaProducer = new KafkaProducer<>(getProps());
-					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
+					Serializer<K> producerSerializerKey = createSerializer(getSerializerKey());
+					Serializer<V> producerSerializerValue = createSerializer(getSerializerValue());
+					kafkaProducer = new KafkaProducer<>(getProps(), producerSerializerKey, producerSerializerValue);
+					variables.putObject(producerClientVariableName, kafkaProducer);
+					variables.putObject(producerSerializerKeyVariableName, getSerializerKey());
+					variables.putObject(producerSerializerValueVariableName, getSerializerValue());
 					LOGGER.info("Kafka Producer client successfully Initialized");
 				} catch (Exception e) {
 					LOGGER.error("Error establishing Kafka producer client!", e);
@@ -88,18 +85,21 @@ public class KafkaProducerConfig extends ConfigTestElement
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private <T> Serializer<T> createSerializer(String serializerClass) throws ReflectiveOperationException {
+		return (Serializer<T>) Class.forName(serializerClass).getDeclaredConstructor().newInstance();
+	}
+
 	private Properties getProps() {
 		Properties props = new Properties();
 
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
 		props.put(ProducerConfig.BATCH_SIZE_CONFIG, getBatchSize());
 		props.put(ProducerConfig.CLIENT_ID_CONFIG, getClientId());
-		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, getSerializerKey());
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, getSerializerValue());
 		props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 
 		LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
-		if (getExtraConfigs().size() >= 1) {
+		if (!getExtraConfigs().isEmpty()) {
 			LOGGER.info("Setting up Additional properties");
 			for (VariableSettings entry : getExtraConfigs()){
 				props.put(entry.getConfigKey(), entry.getConfigValue());
@@ -140,13 +140,9 @@ public class KafkaProducerConfig extends ConfigTestElement
 	}
 
 	// Getters and setters
-	public KafkaProducer<String, Object> getKafkaProducer() {
+	public KafkaProducer<K, V> getKafkaProducer() {
 		return kafkaProducer;
 	}
-
-	public String getKafkaProducerClientVariableName() { return kafkaProducerClientVariableName; }
-
-	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
 
 	public String getKafkaBrokers() {
 		return kafkaBrokers;
@@ -244,4 +240,23 @@ public class KafkaProducerConfig extends ConfigTestElement
 		this.serializerValue = serializerValue;
 	}
 
+	public static String getProducerSerializerKeyVariableName() {
+		return producerSerializerKeyVariableName;
+	}
+
+	public static void setProducerSerializerKeyVariableName(String producerSerializerKeyVariableName) {
+		KafkaProducerConfig.producerSerializerKeyVariableName = producerSerializerKeyVariableName;
+	}
+
+	public static String getProducerSerializerValueVariableName() {
+		return producerSerializerValueVariableName;
+	}
+
+	public static void setProducerSerializerValueVariableName(String producerSerializerValueVariableName) {
+		KafkaProducerConfig.producerSerializerValueVariableName = producerSerializerValueVariableName;
+	}
+
+	public String getProducerClientVariableName() { return producerClientVariableName; }
+
+	public void setProducerClientVariableName(String producerClientVariableName) { this.producerClientVariableName = producerClientVariableName; }
 }
