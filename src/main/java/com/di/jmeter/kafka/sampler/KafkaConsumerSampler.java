@@ -45,20 +45,25 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerSampler.class);
 
+    private static final Set<String> APPLIABLE_CONFIG_CLASSES = new HashSet<>(
+            Collections.singletonList("org.apache.jmeter.config.gui.SimpleConfigGui"));
+    private static final long DEFAULT_TIMEOUT = 100L;
     private String kafkaConsumerClientVariableName;
     private String consumerSerializerKeyVariableName;
     private String consumerSerializerValueVariableName;
     private String pollTimeout;
     private String commitType;
-    private final long DEFAULT_TIMEOUT = 100;
 
-    private KafkaConsumer<String, Object> kafkaConsumer;
+
+    private KafkaConsumer<K, V> kafkaConsumer;
 
     @Override
     public SampleResult sample(Entry entry) {
@@ -74,7 +79,6 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
             result.setContentType("text/plain");
             result.setDataEncoding(StandardCharsets.UTF_8.name());
             result.setRequestHeaders(String.format("TimeStamp: %s\n", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))));
-
             result.sampleStart();
             this.processRecordsToResults(getConsumerRecords(), result);
 
@@ -155,7 +159,6 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
             throw new IllegalArgumentException("Unsupported deserializer type: " + deserializerClass.getName());
         }
     }
-
     private void processRecordsToResults(ConsumerRecords<K, V> consumerRecords, SampleResult result) {
         if(!consumerRecords.isEmpty()){
             StringBuilder headers = new StringBuilder();
@@ -176,9 +179,15 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         }
     }
 
+    @Override
+    public boolean applies(ConfigTestElement configElement) {
+        String guiClass = configElement.getProperty(TestElement.GUI_CLASS).getStringValue();
+        return APPLIABLE_CONFIG_CLASSES.contains(guiClass);
+    }
+
     private void validateClient() {
         if (this.kafkaConsumer == null && getKafkaConsumer() != null) {
-            this.kafkaConsumer = getKafkaConsumer();
+            this.kafkaConsumer = (KafkaConsumer<K, V>) getKafkaConsumer();
         }else{
             throw new RuntimeException("Kafka Consumer Client not found. Check Variable Name in KafkaConsumerSampler.");
         }
@@ -190,11 +199,6 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         result.setResponseData(String.format("Error sending message to kafka topic : %s", ex.toString()).getBytes());
         result.setSuccessful(false);
         return result;
-    }
-
-    @Override
-    public boolean applies(ConfigTestElement configTestElement) {
-        return false;
     }
 
     @Override

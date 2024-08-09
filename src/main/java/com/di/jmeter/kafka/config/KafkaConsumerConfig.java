@@ -49,8 +49,8 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
     private String topic;
     private String numberOfMsgToPoll;
     private boolean autoCommit;
-    private String deSerializerKey;
-    private String deSerializerValue;
+    private String deserializerKey;
+    private String deserializerValue;
     private String securityType;
     private String kafkaSslKeystore; // Kafka ssl keystore (include path information); e.g; "server.keystore.jks"
     private String kafkaSslKeystorePassword; // Keystore Password
@@ -131,8 +131,10 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
 
     @Override
     public void testEnded() {
-        kafkaConsumer.close();
-        LOGGER.info("Kafka consumer client connection terminated");
+        if(kafkaConsumer != null){
+            kafkaConsumer.close();
+            LOGGER.info("Kafka consumer client connection terminated");
+        }
     }
 
     @Override
@@ -241,20 +243,27 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
         this.autoCommit = autoCommit;
     }
 
-    public String getDeSerializerKey() {
-        return deSerializerKey;
+    public String getDeserializerKey() {
+        return deserializerKey;
+    }
+    public void setDeserializerKey(String deserializerKey) {
+        this.deserializerKey = deserializerKey;
     }
 
-    public void setDeSerializerKey(String deSerializerKey) {
-        this.deSerializerKey = deSerializerKey;
+    public String getDeserializerValue() {
+        return deserializerValue;
     }
 
-    public String getDeSerializerValue() {
-        return deSerializerValue;
+    public void setDeserializerValue(String deserializerValue) {
+        this.deserializerValue = deserializerValue;
     }
 
-    public void setDeSerializerValue(String deSerializerValue) {
-        this.deSerializerValue = deSerializerValue;
+    public String getKafkaConsumerClientVariableName() {
+        return kafkaConsumerClientVariableName;
+    }
+
+    public void setKafkaConsumerClientVariableName(String kafkaConsumerClientVariableName) {
+        this.kafkaConsumerClientVariableName = kafkaConsumerClientVariableName;
     }
 
     public String getConsumerClientVariableName() {

@@ -62,7 +62,7 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 	private String kafkaTopic;
 	private String partitionString;
 	private String kafkaMessageKey;
-	private String kafkaMessage;
+	private Object kafkaMessage;
 	private List<VariableSettings> messageHeaders;
 	private KafkaProducer<K, V> kafkaProducer;
 
@@ -70,18 +70,18 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 	public SampleResult sample(Entry e) {
 
 		SampleResult result = new SampleResult();
+
 		try {
 
 			if(this.kafkaProducer == null){
 				this.validateClient();
 			}
 			ProducerRecord<K, V> producerRecord = getProducerRecord();
-
 			result.setSampleLabel(getName());
 			result.setDataType(SampleResult.TEXT);
 			result.setContentType("text/plain");
 			result.setDataEncoding(StandardCharsets.UTF_8.name());
-			result.setSamplerData(getKafkaMessageKey()+": "+getKafkaMessage());
+			result.setSamplerData(getKafkaMessageKey()+": "+ getKafkaMessage());
 			result.setRequestHeaders(producerRecord.headers().toString());
 			result.sampleStart();
 			Future<RecordMetadata> metaData = kafkaProducer.send(producerRecord);
@@ -193,12 +193,12 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 			throw new RuntimeException("Kafka Producer Client not found. Check Variable Name in KafkaProducerSampler.");
 		}
 	}
+
 	private SampleResult handleException(SampleResult result, Exception ex) {
 		result.setResponseMessage("Message: Error sending message to kafka topic");
 		result.setResponseCode("500");
 		result.setResponseData(String.format("Error sending message to kafka topic : %s", ex.toString()).getBytes());
 		result.setSuccessful(false);
-		return result;
 	}
 
 	//Getters Setters
@@ -241,7 +241,7 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 	}
 
 	public String getKafkaMessage() {
-		return kafkaMessage;
+		return (String) kafkaMessage;
 	}
 
 	public void setKafkaMessage(String kafkaMessage) {
@@ -268,4 +268,8 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 	private String getProducerSerializerValue() {
 		return (String) JMeterContextService.getContext().getVariables().getObject(getProducerSerializerValueVariableName());
 	}
+	private String getValueSerializer() {
+		return (String) JMeterContextService.getContext().getVariables().getObject(getKafkaProducerValueSerializerVariableName());
+	}
+
 }
