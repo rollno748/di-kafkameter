@@ -17,10 +17,7 @@
  */
 package com.di.jmeter.kafka.config;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Properties;
-
+import com.di.jmeter.kafka.utils.VariableSettings;
 import org.apache.jmeter.config.ConfigElement;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.testbeans.TestBean;
@@ -29,22 +26,21 @@ import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.di.jmeter.kafka.utils.VariableSettings;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Properties;
 
-public class KafkaProducerConfig extends ConfigTestElement
+public class KafkaProducerConfig<K, V> extends ConfigTestElement
 		implements ConfigElement, TestBean, TestStateListener, Serializable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfig.class);
 	private static final long serialVersionUID = 3328926106250797599L;
-
-	private KafkaProducer<String, Object> kafkaProducer;
+	private KafkaProducer<K, V> kafkaProducer;
 	private List<VariableSettings> extraConfigs;
-
-	private String kafkaProducerClientVariableName;
-
 	private String kafkaBrokers;
 	private String batchSize; // default: 16384
 	private String clientId;
@@ -56,18 +52,15 @@ public class KafkaProducerConfig extends ConfigTestElement
 	private String kafkaSslTruststore;
 	private String kafkaSslTruststorePassword;
 	private String kafkaSslPrivateKeyPass;
+	private String kafkaProducerClientVariableName;
+	private String kafkaProducerSerializerKeyVariableName;
+	private String kafkaProducerSerializerValueVariableName;
 
 	@Override
 	public void addConfigElement(ConfigElement config) {
-
 	}
 
-	@Override
-	public boolean expectsModification() {
-		return false;
-	}
-
-	@Override
+    @Override
 	public void testStarted() {
 		this.setRunningVersion(true);
 		TestBeanHelper.prepare(this);
@@ -78,8 +71,12 @@ public class KafkaProducerConfig extends ConfigTestElement
 		} else {
 			synchronized (this) {
 				try {
-					kafkaProducer = new KafkaProducer<>(getProps());
+					Serializer<K> producerSerializerKey = createSerializer(getSerializerKey());
+					Serializer<V> producerSerializerValue = createSerializer(getSerializerValue());
+					kafkaProducer = new KafkaProducer<>(getProps(), producerSerializerKey, producerSerializerValue);
 					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
+					variables.put(kafkaProducerSerializerKeyVariableName, getSerializerKey());
+					variables.put(kafkaProducerSerializerValueVariableName, getSerializerValue());
 					LOGGER.info("Kafka Producer client successfully Initialized");
 				} catch (Exception e) {
 					LOGGER.error("Error establishing Kafka producer client!", e);
@@ -88,18 +85,21 @@ public class KafkaProducerConfig extends ConfigTestElement
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private <T> Serializer<T> createSerializer(String serializerClass) throws ReflectiveOperationException {
+		return (Serializer<T>) Class.forName(serializerClass).getDeclaredConstructor().newInstance();
+	}
+
 	private Properties getProps() {
 		Properties props = new Properties();
 
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
 		props.put(ProducerConfig.BATCH_SIZE_CONFIG, getBatchSize());
 		props.put(ProducerConfig.CLIENT_ID_CONFIG, getClientId());
-		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, getSerializerKey());
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, getSerializerValue());
 		props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 
 		LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
-		if (getExtraConfigs().size() >= 1) {
+		if (!getExtraConfigs().isEmpty()) {
 			LOGGER.info("Setting up Additional properties");
 			for (VariableSettings entry : getExtraConfigs()){
 				props.put(entry.getConfigKey(), entry.getConfigValue());
@@ -110,13 +110,16 @@ public class KafkaProducerConfig extends ConfigTestElement
 		if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
 			LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
 			LOGGER.info("Setting up Kafka {} properties", getSecurityType());
-			props.put("ssl.truststore.location", getKafkaSslTruststore());
-			props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
-			props.put("ssl.keystore.location", getKafkaSslKeystore());
-			props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
-			props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
+			if(!getKafkaSslKeystore().isEmpty()) {
+				props.put("ssl.truststore.location", getKafkaSslTruststore());
+				props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
+			}
+			if(!getKafkaSslKeystore().isEmpty()){
+				props.put("ssl.keystore.location", getKafkaSslKeystore());
+				props.put("ssl.keystore.password", getKafkaSslKeystorePassword());
+				props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
+			}
 		}
-
 		return props;
 	}
 
@@ -140,18 +143,13 @@ public class KafkaProducerConfig extends ConfigTestElement
 	}
 
 	// Getters and setters
-	public KafkaProducer<String, Object> getKafkaProducer() {
+	public KafkaProducer<K, V> getKafkaProducer() {
 		return kafkaProducer;
 	}
-
-	public String getKafkaProducerClientVariableName() { return kafkaProducerClientVariableName; }
-
-	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
 
 	public String getKafkaBrokers() {
 		return kafkaBrokers;
 	}
-
 	public void setKafkaBrokers(String kafkaBrokers) {
 		this.kafkaBrokers = kafkaBrokers;
 	}
@@ -159,7 +157,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public String getSecurityType() {
 		return securityType;
 	}
-
 	public void setSecurityType(String securityType) {
 		this.securityType = securityType;
 	}
@@ -167,7 +164,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public String getKafkaSslKeystore() {
 		return kafkaSslKeystore;
 	}
-
 	public void setKafkaSslKeystore(String kafkaSslKeystore) {
 		this.kafkaSslKeystore = kafkaSslKeystore;
 	}
@@ -175,7 +171,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public String getKafkaSslKeystorePassword() {
 		return kafkaSslKeystorePassword;
 	}
-
 	public void setKafkaSslKeystorePassword(String kafkaSslKeystorePassword) {
 		this.kafkaSslKeystorePassword = kafkaSslKeystorePassword;
 	}
@@ -183,7 +178,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public String getKafkaSslTruststore() {
 		return kafkaSslTruststore;
 	}
-
 	public void setKafkaSslTruststore(String kafkaSslTruststore) {
 		this.kafkaSslTruststore = kafkaSslTruststore;
 	}
@@ -191,7 +185,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public String getKafkaSslTruststorePassword() {
 		return kafkaSslTruststorePassword;
 	}
-
 	public void setKafkaSslTruststorePassword(String kafkaSslTruststorePassword) {
 		this.kafkaSslTruststorePassword = kafkaSslTruststorePassword;
 	}
@@ -199,23 +192,20 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public String getKafkaSslPrivateKeyPass() {
 		return kafkaSslPrivateKeyPass;
 	}
-
 	public void setKafkaSslPrivateKeyPass(String kafkaSslPrivateKeyPass) {
 		this.kafkaSslPrivateKeyPass = kafkaSslPrivateKeyPass;
-	}
-
-	public void setExtraConfigs(List<VariableSettings> extraConfigs) {
-		this.extraConfigs = extraConfigs;
 	}
 
 	public List<VariableSettings> getExtraConfigs() {
 		return this.extraConfigs;
 	}
+	public void setExtraConfigs(List<VariableSettings> extraConfigs) {
+		this.extraConfigs = extraConfigs;
+	}
 
 	public String getBatchSize() {
 		return batchSize;
 	}
-
 	public void setBatchSize(String batchSize) {
 		this.batchSize = batchSize;
 	}
@@ -223,7 +213,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public String getClientId() {
 		return clientId;
 	}
-
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
 	}
@@ -231,7 +220,6 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public String getSerializerKey() {
 		return serializerKey;
 	}
-
 	public void setSerializerKey(String serializerKey) {
 		this.serializerKey = serializerKey;
 	}
@@ -239,9 +227,11 @@ public class KafkaProducerConfig extends ConfigTestElement
 	public String getSerializerValue() {
 		return serializerValue;
 	}
-
 	public void setSerializerValue(String serializerValue) {
 		this.serializerValue = serializerValue;
 	}
+
+	public String getKafkaProducerClientVariableName() { return kafkaProducerClientVariableName; }
+	public void setKafkaProducerClientVariableName(String kafkaProducerClientVariableName) { this.kafkaProducerClientVariableName = kafkaProducerClientVariableName; }
 
 }

@@ -17,24 +17,23 @@
  */
 package com.di.jmeter.kafka.config;
 
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
+import com.di.jmeter.kafka.utils.VariableSettings;
 import org.apache.jmeter.testbeans.BeanInfoSupport;
 import org.apache.jmeter.testbeans.gui.TableEditor;
 import org.apache.jmeter.testbeans.gui.TypeEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.di.jmeter.kafka.utils.VariableSettings;
+import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfigBeanInfo.class);
-	private static final String SECURITYTYPE= "securityType";
-	private static final String[] SECURITYTYPE_TAGS = new String[4];
+	private static final String SECURITY_TYPE = "securityType";
+	private static final String[] SECURITY_TYPE_TAGS = new String[4];
 	static final int PLAINTEXT = 0;
 	static final int SSL = 1;
 	static final int SASL_PLAINTEXT = 2;
@@ -43,10 +42,10 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 	private static final String KAFKA_CONFIG_VALUE = "Config value";
 
 	static {
-		SECURITYTYPE_TAGS[PLAINTEXT] = "securityType.plaintext";
-		SECURITYTYPE_TAGS[SSL] = "securityType.ssl";
-		SECURITYTYPE_TAGS[SASL_PLAINTEXT] = "securityType.sasl_plaintext";
-		SECURITYTYPE_TAGS[SASL_SSL] = "securityType.sasl_ssl";
+		SECURITY_TYPE_TAGS[PLAINTEXT] = "securityType.plaintext";
+		SECURITY_TYPE_TAGS[SSL] = "securityType.ssl";
+		SECURITY_TYPE_TAGS[SASL_PLAINTEXT] = "securityType.sasl_plaintext";
+		SECURITY_TYPE_TAGS[SASL_SSL] = "securityType.sasl_ssl";
 	}
 
 	public KafkaProducerConfigBeanInfo() {
@@ -56,7 +55,7 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		//Connection configs
 		createPropertyGroup("Kafka Connection Configs", new String[] {"kafkaBrokers", "batchSize", "clientId", "serializerKey", "serializerValue"});
 		//Security configs
-		createPropertyGroup("Security", new String[] { SECURITYTYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
+		createPropertyGroup("Security", new String[] {SECURITY_TYPE, "kafkaSslTruststore", "kafkaSslTruststorePassword", "kafkaSslKeystore", "kafkaSslKeystorePassword", "kafkaSslPrivateKeyPass"});
 		//Additional configs
 		createPropertyGroup("Additional Configs", new String[] {"extraConfigs"});
 
@@ -96,13 +95,13 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 		connectionConfigPropDesc.setDisplayName("Serializer Value");
 		connectionConfigPropDesc.setShortDescription("Serializer Value (must accept String input)");
 
-		PropertyDescriptor securityPropDesc =  property(SECURITYTYPE, TypeEditor.ComboStringEditor);
+		PropertyDescriptor securityPropDesc =  property(SECURITY_TYPE, TypeEditor.ComboStringEditor);
 		securityPropDesc.setValue(RESOURCE_BUNDLE, getBeanDescriptor().getValue(RESOURCE_BUNDLE));
 		securityPropDesc.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		securityPropDesc.setValue(DEFAULT, SECURITYTYPE_TAGS[PLAINTEXT]);
+		securityPropDesc.setValue(DEFAULT, SECURITY_TYPE_TAGS[PLAINTEXT]);
 		securityPropDesc.setValue(NOT_OTHER, Boolean.FALSE);
 		securityPropDesc.setValue(NOT_EXPRESSION, Boolean.FALSE);
-		securityPropDesc.setValue(TAGS, SECURITYTYPE_TAGS);
+		securityPropDesc.setValue(TAGS, SECURITY_TYPE_TAGS);
 		securityPropDesc.setDisplayName("Type");
 		securityPropDesc.setShortDescription("Select the security type");
 
@@ -152,19 +151,19 @@ public class KafkaProducerConfigBeanInfo extends BeanInfoSupport{
 	}
 
 	public static int getSecurityTypeAsInt(String mode) {
-		if (mode == null || mode.length() == 0) {
+		if (mode == null || mode.isEmpty()) {
 			return PLAINTEXT;
 		}
-		for (int i = 0; i < SECURITYTYPE_TAGS.length; i++) {
-			if (SECURITYTYPE_TAGS[i].equals(mode)) {
+		for (int i = 0; i < SECURITY_TYPE_TAGS.length; i++) {
+			if (SECURITY_TYPE_TAGS[i].equals(mode)) {
 				return i;
 			}
 		}
 		return -1;
 	}
 	public static String[] getSecurityTypeTags() {
-		String[] copy = new String[SECURITYTYPE_TAGS.length];
-		System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
+		String[] copy = new String[SECURITY_TYPE_TAGS.length];
+		System.arraycopy(SECURITY_TYPE_TAGS, 0, copy, 0, SECURITY_TYPE_TAGS.length);
 		return copy;
 	}
 }
