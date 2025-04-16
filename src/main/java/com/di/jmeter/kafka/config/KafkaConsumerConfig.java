@@ -23,6 +23,7 @@ import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testbeans.TestBeanHelper;
 import org.apache.jmeter.testelement.TestStateListener;
+import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -34,11 +35,16 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class KafkaConsumerConfig<K, V> extends ConfigTestElement
         implements ConfigElement, TestBean, TestStateListener, Serializable {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerConfig.class);
     private static final long serialVersionUID = 3328926106250797599L;
+
+    private transient ThreadLocal<KafkaConsumer<K, V>> threadLocalConsumer;
+    private transient ConcurrentHashMap<String, Properties> threadLocalConfigs;
 
     private KafkaConsumer<K, V> kafkaConsumer;
     private List<VariableSettings> extraConfigs;
@@ -66,57 +72,51 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
     public void testStarted() {
         this.setRunningVersion(true);
         TestBeanHelper.prepare(this);
-        JMeterVariables variables = getThreadContext().getVariables();
 
-        if (variables.getObject(kafkaConsumerClientVariableName) != null) {
-            LOGGER.error("Kafka consumer is already running.");
-        } else {
-            synchronized (this) {
-                try {
-                    String deSerializerKey = getDeSerializerKey();
-                    String deSerializerValue = getDeSerializerValue();
-                    Deserializer<K> consumerDeserializerKey = createDeserializer(deSerializerKey);
-                    Deserializer<V> consumerDeserializerValue = createDeserializer(deSerializerValue);
-                    kafkaConsumer = new KafkaConsumer<>(getProps(), consumerDeserializerKey, consumerDeserializerValue);
-                    kafkaConsumer.subscribe(Collections.singletonList(getTopic()));
-                    variables.putObject(kafkaConsumerClientVariableName, kafkaConsumer);
-                    variables.putObject("consumerDeserializerKeyVariableName", deSerializerKey);
-                    variables.putObject("consumerDeserializerValueVariableName", deSerializerValue);
-                    LOGGER.info("Kafka consumer client successfully Initialized");
-                } catch (Exception e) {
-                    LOGGER.error("Error establishing kafka consumer client!", e);
-                }
+        this.threadLocalConfigs = new ConcurrentHashMap<>();
+        this.threadLocalConsumer = ThreadLocal.withInitial(() -> {
+            try {
+                String threadName = String.valueOf(JMeterContextService.getContext().getThread());
+                Properties props = createThreadSpecificProperties(threadName);
+                Deserializer<K> consumerDeserializerKey = createDeserializer(deSerializerKey);
+                Deserializer<V> consumerDeserializerValue = createDeserializer(deSerializerValue);
+                kafkaConsumer = new KafkaConsumer<>(props, consumerDeserializerKey, consumerDeserializerValue);
+                kafkaConsumer.subscribe(Collections.singletonList(getTopic()));
+
+                JMeterVariables variables = getThreadContext().getVariables();
+                variables.putObject(kafkaConsumerClientVariableName, kafkaConsumer);
+                variables.putObject("consumerDeserializerKeyVariableName", deSerializerKey);
+                variables.putObject("consumerDeserializerValueVariableName", deSerializerValue);
+                LOGGER.info("Kafka consumer created for thread {} ", threadName);
+                return kafkaConsumer;
+            } catch (ReflectiveOperationException e) {
+                LOGGER.error("Error establishing kafka consumer client!", e);
+                throw new RuntimeException("Failed to create consumer client", e);
             }
-        }
+        });
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> Deserializer<T> createDeserializer(String deserializerClass) throws ReflectiveOperationException {
-        return (Deserializer<T>) Class.forName(deserializerClass).getDeclaredConstructor().newInstance();
-    }
-
-    private Properties getProps() {
+    private Properties createThreadSpecificProperties(String threadName) {
         Properties props = new Properties();
-
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId());//groupId
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, getGroupId() + "-" + threadName.hashCode()); //groupId will be appended with the threadName as suffix
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, isAutoCommit());
         props.put("security.protocol", getSecurityType().replaceAll("securityType.", "").toUpperCase());
 
-        LOGGER.debug("Additional Config Size::: " + getExtraConfigs().size());
+        LOGGER.debug("Additional Config Size: {}", getExtraConfigs().size());
         if (!getExtraConfigs().isEmpty()) {
             LOGGER.info("Setting up Additional properties");
             for (VariableSettings entry : getExtraConfigs()){
                 props.put(entry.getConfigKey(), entry.getConfigValue());
-                LOGGER.debug(String.format("Adding property : %s", entry.getConfigKey()));
+                LOGGER.debug("Adding property : {}", entry.getConfigKey());
             }
         }
 
+        LOGGER.debug("Kafka security type: {}", getSecurityType().replaceAll("securityType.", "").toUpperCase());
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, Math.max(Integer.parseInt(getNumberOfMsgToPoll()), 1));
         if (getSecurityType().equalsIgnoreCase("securityType.ssl") || getSecurityType().equalsIgnoreCase("securityType.sasl_ssl")) {
-            LOGGER.info("Kafka security type: " + getSecurityType().replaceAll("securityType.", "").toUpperCase());
-            LOGGER.info("Setting up Kafka {} properties", getSecurityType());
-            if(!getKafkaSslKeystore().isEmpty()) {
+            LOGGER.debug("Setting up Kafka {} properties", getSecurityType());
+            if(!getKafkaSslTruststore().isEmpty()) {
                 props.put("ssl.truststore.location", getKafkaSslTruststore());
                 props.put("ssl.truststore.password", getKafkaSslTruststorePassword());
             }
@@ -126,7 +126,13 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
                 props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
             }
         }
+        threadLocalConfigs.put(threadName, props);
         return props;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> Deserializer<T> createDeserializer(String deserializerClass) throws ReflectiveOperationException {
+        return (Deserializer<T>) Class.forName(deserializerClass).getDeclaredConstructor().newInstance();
     }
 
     @Override
@@ -149,8 +155,11 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
     }
 
     // Getters and setters
-    public KafkaConsumer<K, V> getKafkaConsumer() {
-        return kafkaConsumer;
+    public KafkaConsumer<K, V> getThreadLocalKafkaConsumer() {
+        if(threadLocalConsumer == null){
+            throw new IllegalStateException("Kafka consumer not initialized");
+        }
+        return threadLocalConsumer.get();
     }
 
     public String getKafkaConsumerClientVariableName() {

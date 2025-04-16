@@ -17,6 +17,7 @@
  */
 package com.di.jmeter.kafka.sampler;
 
+import com.di.jmeter.kafka.config.KafkaConsumerConfig;
 import com.google.common.base.Strings;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.engine.util.ConfigMergabilityIndicator;
@@ -29,11 +30,11 @@ import org.apache.jmeter.testelement.AbstractTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterContextService;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.jmeter.threads.JMeterThread;
+import org.apache.jmeter.threads.JMeterVariables;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.serialization.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,15 +44,17 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerSampler.class);
 
     private String pollTimeout;
     private String commitType;
     private final long DEFAULT_TIMEOUT = 100;
-    private KafkaConsumer<K, V> kafkaConsumer;
     private String kafkaConsumerClientVariableName;
 
     @Override
@@ -63,7 +66,7 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         result.setDataEncoding(StandardCharsets.UTF_8.name());
 
         try{
-            KafkaConsumer<K, V> kafkaConsumer = getKafkaConsumerClient();
+            KafkaConsumer<K, V> kafkaConsumer = getThreadLocalConsumer();//getKafkaConsumerClient();
             result.sampleStart();
             ConsumerRecords<K, V> consumerRecords = getConsumerRecords(kafkaConsumer);
             processRecordsToResults(consumerRecords, result);
@@ -78,6 +81,19 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         }
         return result;
     }
+
+    @SuppressWarnings("unchecked")
+    private KafkaConsumer<K,V> getThreadLocalConsumer() {
+        KafkaConsumerConfig<K, V> config = (KafkaConsumerConfig<K, V>) JMeterContextService.getContext()
+                .getVariables()
+                .getObject(kafkaConsumerClientVariableName);
+
+        if(config == null){
+            throw  new IllegalStateException("KafkaConsumerConfig not found with name : " + kafkaConsumerClientVariableName);
+        }
+        return config.getThreadLocalKafkaConsumer();
+    }
+
 
     private ConsumerRecords<K, V> getConsumerRecords(KafkaConsumer<K, V> consumer) {
         long timeout = pollTimeout != null && !pollTimeout.isEmpty() ? Long.parseLong(pollTimeout) : DEFAULT_TIMEOUT;
@@ -153,14 +169,6 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         }
     }
 
-    private SampleResult handleException(SampleResult result, Exception ex) {
-        result.setResponseMessage("Error sending message to kafka topic");
-        result.setResponseCode("500");
-        result.setResponseData(String.format("Error sending message to kafka topic : %s", ex.toString()).getBytes());
-        result.setSuccessful(false);
-        return result;
-    }
-
     @Override
     public boolean applies(ConfigTestElement configTestElement) {
         return false;
@@ -172,6 +180,7 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
     @Override
     public void testStarted(String s) {
     }
+
     @Override
     public void testEnded() {
     }
@@ -204,26 +213,4 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
     public void setCommitType(String commitType) {
         this.commitType = commitType;
     }
-
-    public KafkaConsumer<K, V> getKafkaConsumerClient() {
-        String variableName = getKafkaConsumerClientVariableName();
-        Object consumerObject = JMeterContextService.getContext().getVariables().getObject(variableName);
-
-        if (consumerObject == null) {
-            throw new IllegalStateException("Kafka Consumer Client not found. Check Variable Name '" + variableName + "' in KafkaConsumerSampler.");
-        }
-
-        if (!(consumerObject instanceof KafkaConsumer)) {
-            throw new IllegalStateException("Object stored in '" + variableName + "' is not a KafkaProducer. Found: " + consumerObject.getClass().getName());
-        }
-
-        try {
-            @SuppressWarnings("unchecked")
-            KafkaConsumer<K, V> consumer = (KafkaConsumer<K, V>) consumerObject;
-            return consumer;
-        } catch (ClassCastException e) {
-            throw new IllegalStateException("Failed to cast object to KafkaConsumer<K, V>. This might be due to a mismatch in generic types.", e);
-        }
-    }
-
 }
