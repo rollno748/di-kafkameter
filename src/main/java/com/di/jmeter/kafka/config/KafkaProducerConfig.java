@@ -53,8 +53,8 @@ public class KafkaProducerConfig<K, V> extends ConfigTestElement
 	private String kafkaSslTruststorePassword;
 	private String kafkaSslPrivateKeyPass;
 	private String kafkaProducerClientVariableName;
-	private String kafkaProducerSerializerKeyVariableName;
-	private String kafkaProducerSerializerValueVariableName;
+	private String kafkaProducerSerializerKeyVariableName = "kafkaProducerSerializerKey";
+	private String kafkaProducerSerializerValueVariableName = "kafkaProducerSerializerValue";
 
 	@Override
 	public void addConfigElement(ConfigElement config) {
@@ -75,8 +75,12 @@ public class KafkaProducerConfig<K, V> extends ConfigTestElement
 					Serializer<V> producerSerializerValue = createSerializer(getSerializerValue());
 					kafkaProducer = new KafkaProducer<>(getProps(), producerSerializerKey, producerSerializerValue);
 					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
-					variables.put(kafkaProducerSerializerKeyVariableName, getSerializerKey());
-					variables.put(kafkaProducerSerializerValueVariableName, getSerializerValue());
+					if (kafkaProducerSerializerKeyVariableName != null) {
+						variables.put(kafkaProducerSerializerKeyVariableName, getSerializerKey());
+					}
+					if (kafkaProducerSerializerValueVariableName != null) {
+						variables.put(kafkaProducerSerializerValueVariableName, getSerializerValue());
+					}
 					LOGGER.info("Kafka Producer client successfully Initialized");
 				} catch (Exception e) {
 					LOGGER.error("Error establishing Kafka producer client!", e);

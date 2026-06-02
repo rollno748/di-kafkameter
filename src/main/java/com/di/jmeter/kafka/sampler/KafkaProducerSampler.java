@@ -59,8 +59,8 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 	private String kafkaMessage;
 	private List<VariableSettings> messageHeaders;
 	private String kafkaProducerClientVariableName;
-	private String kafkaProducerSerializerKeyVariableName;
-	private String kafkaProducerSerializerValueVariableName;
+	private String kafkaProducerSerializerKeyVariableName = "kafkaProducerSerializerKey";
+	private String kafkaProducerSerializerValueVariableName = "kafkaProducerSerializerValue";
 
 	@Override
 	public SampleResult sample(Entry e) {

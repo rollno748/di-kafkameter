@@ -161,6 +161,7 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
             LOGGER.debug(pubDescriptorsAsString);
         }
     }
+
     public static int getSecurityTypeAsInt(String mode) {
         if (mode == null || mode.length() == 0) {
             return PLAINTEXT;
@@ -172,6 +173,7 @@ public class KafkaConsumerConfigBeanInfo extends BeanInfoSupport {
         }
         return -1;
     }
+
     public static String[] getSecurityTypeTags() {
         String[] copy = new String[SECURITYTYPE_TAGS.length];
         System.arraycopy(SECURITYTYPE_TAGS, 0, copy, 0, SECURITYTYPE_TAGS.length);
