@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class KafkaConsumerConfig<K, V> extends ConfigTestElement
@@ -44,9 +45,8 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
     private static final long serialVersionUID = 3328926106250797599L;
 
     private transient ThreadLocal<KafkaConsumer<K, V>> threadLocalConsumer;
-    private transient ConcurrentHashMap<String, Properties> threadLocalConfigs;
+    private transient Set<KafkaConsumer<K, V>> activeConsumers;
 
-    private KafkaConsumer<K, V> kafkaConsumer;
     private List<VariableSettings> extraConfigs;
     private String kafkaBrokers;
     private String groupId;
@@ -73,22 +73,23 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
         this.setRunningVersion(true);
         TestBeanHelper.prepare(this);
 
-        this.threadLocalConfigs = new ConcurrentHashMap<>();
+        this.activeConsumers = ConcurrentHashMap.newKeySet();
         this.threadLocalConsumer = ThreadLocal.withInitial(() -> {
             try {
                 String threadName = String.valueOf(JMeterContextService.getContext().getThread());
                 Properties props = createThreadSpecificProperties(threadName);
                 Deserializer<K> consumerDeserializerKey = createDeserializer(deSerializerKey);
                 Deserializer<V> consumerDeserializerValue = createDeserializer(deSerializerValue);
-                kafkaConsumer = new KafkaConsumer<>(props, consumerDeserializerKey, consumerDeserializerValue);
-                kafkaConsumer.subscribe(Collections.singletonList(getTopic()));
+                KafkaConsumer<K, V> consumer = new KafkaConsumer<>(props, consumerDeserializerKey, consumerDeserializerValue);
+                consumer.subscribe(Collections.singletonList(getTopic()));
+                activeConsumers.add(consumer);
 
                 JMeterVariables variables = getThreadContext().getVariables();
-                variables.putObject(kafkaConsumerClientVariableName, kafkaConsumer);
+                variables.putObject(kafkaConsumerClientVariableName, consumer);
                 variables.putObject("consumerDeserializerKeyVariableName", deSerializerKey);
                 variables.putObject("consumerDeserializerValueVariableName", deSerializerValue);
                 LOGGER.info("Kafka consumer created for thread {} ", threadName);
-                return kafkaConsumer;
+                return consumer;
             } catch (ReflectiveOperationException e) {
                 LOGGER.error("Error establishing kafka consumer client!", e);
                 throw new RuntimeException("Failed to create consumer client", e);
@@ -126,7 +127,6 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
                 props.put("ssl.key.password", getKafkaSslPrivateKeyPass());
             }
         }
-        threadLocalConfigs.put(threadName, props);
         return props;
     }
 
@@ -142,10 +142,17 @@ public class KafkaConsumerConfig<K, V> extends ConfigTestElement
 
     @Override
     public void testEnded() {
-        if(kafkaConsumer != null){
-            kafkaConsumer.unsubscribe();
-            kafkaConsumer.close();
-            LOGGER.info("Kafka consumer client connection terminated");
+        if (activeConsumers != null) {
+            for (KafkaConsumer<K, V> consumer : activeConsumers) {
+                try {
+                    consumer.unsubscribe();
+                    consumer.close();
+                } catch (Exception e) {
+                    LOGGER.error("Error closing Kafka consumer", e);
+                }
+            }
+            activeConsumers.clear();
+            LOGGER.info("Kafka consumer client connections terminated");
         }
     }
 

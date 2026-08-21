@@ -12,10 +12,10 @@
 
 	<properties>
 		<jdk.version>1.8</jdk.version>
-		<jmeter-version>5.5</jmeter-version>
-		<kafka.client.version>3.3.1</kafka.client.version>
-		<slf4j-api-version>1.7.29</slf4j-api-version>
-		<guava-version>31.1-jre</guava-version>
+		<jmeter-version>5.6.3</jmeter-version>
+		<kafka.client.version>3.9.1</kafka.client.version>
+		<slf4j-api-version>1.7.36</slf4j-api-version>
+		<guava-version>33.7.1-jre</guava-version>
 		<jmeter.lib.scope>provided</jmeter.lib.scope>
 	</properties>
 
@@ -57,7 +57,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3</version>
+				<version>3.13.0</version>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>

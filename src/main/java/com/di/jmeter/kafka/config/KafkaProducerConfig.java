@@ -73,7 +73,7 @@ public class KafkaProducerConfig<K, V> extends ConfigTestElement
 				try {
 					Serializer<K> producerSerializerKey = createSerializer(getSerializerKey());
 					Serializer<V> producerSerializerValue = createSerializer(getSerializerValue());
-					kafkaProducer = new KafkaProducer<>(getProps(), producerSerializerKey, producerSerializerValue);
+					kafkaProducer = new KafkaProducer<>(buildProducerProperties(), producerSerializerKey, producerSerializerValue);
 					variables.putObject(kafkaProducerClientVariableName, kafkaProducer);
 					if (kafkaProducerSerializerKeyVariableName != null) {
 						variables.put(kafkaProducerSerializerKeyVariableName, getSerializerKey());
@@ -94,7 +94,7 @@ public class KafkaProducerConfig<K, V> extends ConfigTestElement
 		return (Serializer<T>) Class.forName(serializerClass).getDeclaredConstructor().newInstance();
 	}
 
-	private Properties getProps() {
+	private Properties buildProducerProperties() {
 		Properties props = new Properties();
 
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBrokers());

@@ -201,7 +201,7 @@ public class KafkaProducerSampler<K, V> extends AbstractTestElement
 	}
 
 	public String getKafkaMessageKey() {
-		return kafkaMessageKey.isEmpty() ? null : kafkaMessageKey;
+		return (kafkaMessageKey == null || kafkaMessageKey.isEmpty()) ? null : kafkaMessageKey;
 	}
 
 	public void setKafkaMessageKey(String kafkaMessageKey) {

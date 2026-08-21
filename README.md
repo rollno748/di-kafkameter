@@ -11,11 +11,11 @@ This plugin is an extended version of Kafkameter with restructured UI and additi
 
 ## Jar Dependencies Required
 
-* kafka-clients-3.3.1
-* guava-31.1-jre
+* kafka-clients-3.9.1
+* guava-33.7.1-jre
 * lz4-java-1.8.0
-* snappy-java-1.1.8.4
-* zstd-jni-1.5.2-1
+* snappy-java-1.1.10.5
+* zstd-jni-1.5.6-4
 
 ## Jmeter Target
 

@@ -30,11 +30,8 @@ import org.apache.jmeter.testelement.AbstractTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.threads.JMeterContextService;
-import org.apache.jmeter.threads.JMeterThread;
-import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.serialization.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,17 +41,17 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class KafkaConsumerSampler<K, V> extends AbstractTestElement
         implements Sampler, TestBean, ConfigMergabilityIndicator, TestStateListener, TestElement, Serializable, Searchable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerSampler.class);
 
+    private static final long DEFAULT_TIMEOUT = 100;
+    private static final int MAX_POLL_ATTEMPTS = 10;
+
     private String pollTimeout;
     private String commitType;
-    private final long DEFAULT_TIMEOUT = 100;
     private String kafkaConsumerClientVariableName;
 
     @Override
@@ -98,9 +95,11 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
     private ConsumerRecords<K, V> getConsumerRecords(KafkaConsumer<K, V> consumer) {
         long timeout = pollTimeout != null && !pollTimeout.isEmpty() ? Long.parseLong(pollTimeout) : DEFAULT_TIMEOUT;
         ConsumerRecords<K, V> records;
+        int attempt = 0;
         do {
-            records = consumer.poll(Duration.ofMillis(timeout)); // This will poll Single/multiple messages of records as per the config
-        } while (records.isEmpty());
+            records = consumer.poll(Duration.ofMillis(timeout)); // Poll single/multiple records as per config
+            attempt++;
+        } while (records.isEmpty() && attempt < MAX_POLL_ATTEMPTS);
 
         for(ConsumerRecord<K, V> record : records){
             LOGGER.debug(String.format("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value()));
@@ -199,7 +198,7 @@ public class KafkaConsumerSampler<K, V> extends AbstractTestElement
     }
 
     public String getPollTimeout() {
-        return (Strings.isNullOrEmpty(pollTimeout)) ? pollTimeout : String.valueOf(DEFAULT_TIMEOUT);
+        return Strings.isNullOrEmpty(pollTimeout) ? String.valueOf(DEFAULT_TIMEOUT) : pollTimeout;
     }
 
     public void setPollTimeout(String pollTimeout) {
